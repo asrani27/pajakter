@@ -83,8 +83,18 @@ class PajakController extends Controller
             $no = '12';
         }
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
-        // dd(DB::connection('tppsql')->table('users')->take(5)->get());
-        // dd($no, $tahun, $skpd_id);
+        $data->map(function ($item) use ($no, $tahun) {
+            $check = DB::connection('tppsql')->table('rekap_reguler')->where('nip', $item->nip)->where('no', $item->no)->where('tahun', $item->tahun)->first();
+            if ($check == 0) {
+                $tpp = 0;
+            } else {
+                $tpp = $check->jumlah_pembayaran;
+            }
+            $item->tpp = $tpp;
+            $item->save();
+            return $item;
+        });
+        return back();
     }
     public function showPajak($id, $skpd_id)
     {
