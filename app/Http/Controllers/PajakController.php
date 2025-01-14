@@ -84,7 +84,7 @@ class PajakController extends Controller
         }
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
         $data->map(function ($item) use ($no, $tahun) {
-            $check = DB::connection('tppsql')->table('rekap_reguler')->where('nip', $item->nip)->where('bulan', $item->no)->where('tahun', $item->tahun)->first();
+            $check = DB::connection('tppsql')->table('rekap_reguler')->where('nip', $item->nip)->where('bulan', $no)->where('tahun', $tahun)->first();
             if ($check == 0) {
                 $tpp = 0;
             } else {
