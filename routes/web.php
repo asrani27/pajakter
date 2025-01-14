@@ -33,6 +33,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/user/delete/{id}', [UserController::class, 'delete']);
 
     Route::get('/superadmin/skpd', [SkpdController::class, 'index']);
+    Route::get('/superadmin/tariktpp/{id}/{bulan}/{tahun}/{skpd_id}', [PajakController::class, 'tariktpp']);
     Route::get('/superadmin/pajakter', [PajakController::class, 'index']);
     Route::get('/superadmin/pajakter/create-bulan-tahun', [PajakController::class, 'createBulanTahun']);
     Route::post('/superadmin/pajakter/create-bulan-tahun', [PajakController::class, 'storeBulanTahun']);

@@ -7,6 +7,7 @@ use App\Models\Pajak;
 use App\Models\BulanTahun;
 use Illuminate\Http\Request;
 use App\Imports\PegawaiImport;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -43,7 +44,48 @@ class PajakController extends Controller
         $skpd = Skpd::get();
         return view('superadmin.pajak.skpd', compact('skpd', 'id'));
     }
-
+    public function tariktpp($id, $bulan, $tahun, $skpd_id)
+    {
+        if (strtolower($bulan) == 'januari') {
+            $no = '01';
+        }
+        if (strtolower($bulan) == 'februari') {
+            $no = '02';
+        }
+        if (strtolower($bulan) == 'maret') {
+            $no = '03';
+        }
+        if (strtolower($bulan) == 'april') {
+            $no = '04';
+        }
+        if (strtolower($bulan) == 'mei') {
+            $no = '05';
+        }
+        if (strtolower($bulan) == 'juni') {
+            $no = '06';
+        }
+        if (strtolower($bulan) == 'juli') {
+            $no = '07';
+        }
+        if (strtolower($bulan) == 'agustus') {
+            $no = '08';
+        }
+        if (strtolower($bulan) == 'september') {
+            $no = '09';
+        }
+        if (strtolower($bulan) == 'oktober') {
+            $no = '10';
+        }
+        if (strtolower($bulan) == 'november') {
+            $no = '11';
+        }
+        if (strtolower($bulan) == 'desember') {
+            $no = '12';
+        }
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
+        // dd(DB::connection('tppsql')->table('users')->take(5)->get());
+        // dd($no, $tahun, $skpd_id);
+    }
     public function showPajak($id, $skpd_id)
     {
         $bulanTahun = BulanTahun::find($id);

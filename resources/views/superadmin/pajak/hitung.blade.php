@@ -43,7 +43,8 @@
                         <tr class="text-white" style="font-size:14px; text-align:center">
                             <th style="border: 1px solid rgb(19, 19, 19)">Gaji</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">TPP &nbsp; &nbsp;
-                                <a href="/progress" class="btn btn-xs btn-default">
+                                <a href="/superadmin/tariktpp/{{$bulanTahun->id}}/{{$bulanTahun->bulan}}/{{$bulanTahun->tahun}}/{{$skpd_id}}"
+                                    class="btn btn-xs btn-default">
                                     <i class="fa fa-recycle"></i>
                                 </a>
                             </th>
