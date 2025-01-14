@@ -90,10 +90,12 @@ class PajakController extends Controller
             } else {
                 $tpp = $check->jumlah_pembayaran;
             }
+
             $item->tpp = $tpp;
             $item->save();
             return $item;
         });
+
         return back();
     }
     public function showPajak($id, $skpd_id)
