@@ -107,8 +107,12 @@ class Pajak extends Model
 
         return $tarif;
     }
-    public function getPphTerutangAttribute()
+    public function getPphPenghasilanAttribute()
     {
         return round($this->total_penghasilan * $this->tarif / 100);
+    }
+    public function getPphTerutangAttribute()
+    {
+        return round($this->pph_penghasilan - $this->pph_gaji);
     }
 }

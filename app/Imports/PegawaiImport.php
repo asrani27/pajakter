@@ -30,6 +30,7 @@ class PegawaiImport implements ToModel, WithStartRow
             'nama' => $row[1],
             'status_kawin' => $row[2],
             'jumlah_tanggungan' => $row[5],
+            'pph_gaji' => $row[11],
             'gaji' => $row[12],
             'gapok' => $row[6],
             'tjk' => $row[7],

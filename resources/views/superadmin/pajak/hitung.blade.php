@@ -38,7 +38,9 @@
                             </th>
                             <th style="border: 1px solid rgb(19, 19, 19)" colspan="3">Penghasilan</th>
                             <th style="border: 1px solid rgb(19, 19, 19)" colspan="2">TER</th>
-                            <th style="border: 1px solid rgb(19, 19, 19)" rowspan="2">PPh Terutang</th>
+                            <th style="border: 1px solid rgb(19, 19, 19)" rowspan="2">PPh 21 Penghasilan</th>
+                            <th style="border: 1px solid rgb(19, 19, 19)" rowspan="2">PPh 21 Gaji</th>
+                            <th style="border: 1px solid rgb(19, 19, 19)" rowspan="2">PPh terutang</th>
                         </tr>
                         <tr class="text-white" style="font-size:14px; text-align:center">
                             <th style="border: 1px solid rgb(19, 19, 19)">Gaji</th>
@@ -71,11 +73,19 @@
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
                                 {{$item->tarif}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->pph_penghasilan)}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->pph_gaji)}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->pph_terutang)}}</td>
                         </tr>
                         @endforeach
                         <tr style="background-color:#3d8b99;" class="text-white text-bold">
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;" colspan="9">TOTAL</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($data->sum('pph_penghasilan'))}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($data->sum('pph_gaji'))}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($data->sum('pph_terutang'))}}</td>
                         </tr>
