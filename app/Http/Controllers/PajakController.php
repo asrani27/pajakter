@@ -179,7 +179,7 @@ class PajakController extends Controller
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
             return $item->attributesToArray(); // Siapkan untuk batch update
         });
-        dd($updatedData);
+
         // Lakukan batch update
         Pajak::upsert(
             $updatedData->map(function ($item) {
