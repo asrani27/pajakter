@@ -19,9 +19,7 @@
                 {{-- <a href="/admin/pajakter/{{$id}}/skpd/{{$skpd_id}}/reset" class="btn btn-sm btn-danger"
                     onclick="return confirm('Yakin Di Hapus?');">
                     <i class="fa fa-times"></i> CLEAR DATA</a> --}}
-                <a href="/admin/pajakter/{{$id}}/skpd/{{$skpd_id}}/bpjs" class="btn btn-sm btn-info">
-                    <i class="fa fa-university"></i> BPJS</a>
-                <br />
+
 
                 <br />
                 <table class="table table-hover text-nowrap table-sm">
