@@ -4,8 +4,9 @@ namespace App\Imports;
 
 use App\Models\Pajak;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class GajiBpjsImport implements ToModel
+class GajiBpjsImport implements ToModel, WithStartRow
 {
     /**
      * @param array $row
@@ -27,8 +28,6 @@ class GajiBpjsImport implements ToModel
     public function model(array $row)
     {
         $nip =  (string) trim($row[0]);
-        $pph_gaji = $row[11];
-        $gaji = $row[12];
 
         if (in_array($nip, $this->existingNips)) {
 
@@ -44,6 +43,7 @@ class GajiBpjsImport implements ToModel
                     'tjf' => $row[9],
                     'tjfu' => $row[10],
                 ]);
+            return null;
         } else {
             return new Pajak([
                 'bulan_tahun_id' => $this->bulan_tahun_id,
