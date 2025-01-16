@@ -171,6 +171,8 @@ class AdminController extends Controller
 
                 $item['created_at'] = now()->format('Y-m-d H:i:s'); // Format datetime
                 $item['updated_at'] = now()->format('Y-m-d H:i:s');
+                $item['bpjs_satu_persen'] = $item['bpjs_satu_persen'];
+                $item['bpjs_empat_persen'] = $item['bpjs_empat_persen'];
                 return $item;
             })->toArray(),
             ['id'],

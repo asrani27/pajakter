@@ -174,6 +174,8 @@ class PajakController extends Controller
 
         // Update data pajak
         $updatedData = $data->map(function ($item) use ($rekapData) {
+            $item->bpjs_satu_persen = $item->tpp_satu_persen;
+            $item->bpjs_empat_persen = $item->tpp_empat_persen;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
             return $item->attributesToArray(); // Siapkan untuk batch update
         });
@@ -187,10 +189,12 @@ class PajakController extends Controller
 
                 $item['created_at'] = now()->format('Y-m-d H:i:s'); // Format datetime
                 $item['updated_at'] = now()->format('Y-m-d H:i:s');
+                $item['bpjs_satu_persen'] = $item['bpjs_satu_persen'];
+                $item['bpjs_empat_persen'] = $item['bpjs_empat_persen'];
                 return $item;
             })->toArray(),
             ['id'],
-            ['tpp', 'pph_terutang', 'updated_at']
+            ['tpp', 'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
         );
 
         Session::flash('success', 'Data TPP berhasil ditarik');
