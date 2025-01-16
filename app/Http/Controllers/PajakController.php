@@ -39,7 +39,9 @@ class PajakController extends Controller
 
             return redirect()->back()->with('success', 'Data SKPD berhasil diimport!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('fail', 'Gagal mengimport data: ' . $e->getMessage());
+
+            Session::flash('error', 'Gagal mengimport data: ' . $e->getMessage());
+            return redirect()->back();
         }
     }
 
@@ -60,7 +62,8 @@ class PajakController extends Controller
 
             return redirect()->back()->with('success', 'Data Gaji berhasil diimport!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('fail', 'Gagal mengimport data: ' . $e->getMessage());
+            Session::flash('error', 'Gagal mengimport data: ' . $e->getMessage());
+            return redirect()->back();
         }
     }
 

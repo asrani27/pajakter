@@ -43,7 +43,6 @@ class GajiBpjsImport implements ToModel, WithStartRow
                     'tjf' => $row[9],
                     'tjfu' => $row[10],
                 ]);
-            return null;
         } else {
             return new Pajak([
                 'bulan_tahun_id' => $this->bulan_tahun_id,
