@@ -14,9 +14,7 @@ class LoginController extends Controller
             $role = Auth::user()->roles;
             $routes = [
                 'superadmin' => '/superadmin',
-                'dpw' => '/dpw',
-                'dpd' => '/dpd',
-                'dpk' => '/dpk',
+                'admin' => '/admin',
             ];
 
             if (array_key_exists($role, $routes)) {
@@ -50,9 +48,7 @@ class LoginController extends Controller
             $role = Auth::user()->roles;
             $routes = [
                 'superadmin' => '/superadmin',
-                'dpw' => '/dpw',
-                'dpd' => '/dpd',
-                'dpk' => '/dpk',
+                'admin' => '/admin',
             ];
 
             if (array_key_exists($role, $routes)) {

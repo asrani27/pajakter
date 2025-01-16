@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\COAController;
@@ -18,6 +19,12 @@ Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::get('/login', [LoginController::class, 'index']);
 Route::post('/login', [LoginController::class, 'login']);
 
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index']);
+    Route::get('/admin/pajakter/{id}', [AdminController::class, 'pajak']);
+    Route::get('/admin/bpjs/{id}', [AdminController::class, 'bpjs']);
+    Route::get('/admin/tariktpp/{id}/{bulan}/{tahun}/{skpd_id}', [PajakController::class, 'tariktpp']);
+});
 Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/progress', function () {
         Session::flash('warning', 'Belum terintegrasi dengan TPP');
