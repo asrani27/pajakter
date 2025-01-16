@@ -93,8 +93,6 @@ class PajakController extends Controller
     }
     public function tariktpp($id, $bulan, $tahun, $skpd_id)
     {
-
-        // Mapping bulan ke angka
         $bulanMap = [
             'januari' => '01',
             'februari' => '02',
@@ -117,8 +115,19 @@ class PajakController extends Controller
             return back();
         }
 
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
+        $rekapData = DB::connection('tpp')
+            ->table('rekap_reguler')
+            ->where('skpd_id', $skpd_id)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('jumlah_pembayaran', 'nip');
 
+        $collection = collect($rekapData);
+        $keys = $collection->keys();
+
+        $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $keys)->update(['skpd_id' => $skpd_id]);
+
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
         if ($data->isEmpty()) {
             Session::flash('info', 'Tidak ada data pajak yang ditemukan');
             return back();
