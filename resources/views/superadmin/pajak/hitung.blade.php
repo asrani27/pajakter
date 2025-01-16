@@ -58,9 +58,12 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                        $no =1;
+                        @endphp
                         @foreach ($data as $key => $item)
                         <tr style="font-size:14px;">
-                            <td style="border: 1px solid rgb(19, 19, 19);">{{$key + 1}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19);">{{$no++}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nip}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nama}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">{{$item->ptkp}}</td>
