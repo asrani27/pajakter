@@ -22,6 +22,15 @@ class GajiTppImport implements ToModel, WithStartRow
 
     public function model(array $row)
     {
+        // Cek apakah data sudah ada berdasarkan 'bulan_tahun_id' dan 'nip'
+        $existingPajak = Pajak::where('bulan_tahun_id', $this->bulan_tahun_id)
+            ->where('nip', $row[0])
+            ->first();
+
+        // Jika data sudah ada, tidak perlu menyimpan
+        if ($existingPajak) {
+            return null;
+        }
         return new Pajak([
             'bulan_tahun_id' => $this->bulan_tahun_id,
             'nip' => $row[0],
