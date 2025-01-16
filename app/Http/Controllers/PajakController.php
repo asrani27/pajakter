@@ -125,8 +125,12 @@ class PajakController extends Controller
 
         $collection = collect($rekapData);
         $keys = $collection->keys();
+        $arrayString = array_map(function ($item) {
+            return (string)$item; // Mengubah setiap item menjadi string
+        }, $keys->toArray());
 
-        $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $keys->toArray())->update(['skpd_id' => $skpd_id]);
+        $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $arrayString)->update(['skpd_id' => $skpd_id]);
+
 
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
         if ($data->isEmpty()) {
