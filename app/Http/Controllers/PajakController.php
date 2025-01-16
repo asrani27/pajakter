@@ -122,10 +122,11 @@ class PajakController extends Controller
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
 
+
         $collection = collect($rekapData);
         $keys = $collection->keys();
 
-        $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $keys)->update(['skpd_id' => $skpd_id]);
+        $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $keys->toArray())->update(['skpd_id' => $skpd_id]);
 
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
         if ($data->isEmpty()) {
@@ -135,6 +136,7 @@ class PajakController extends Controller
 
         // Ambil semua NIP dari data pajak
         $nips = $data->pluck('nip')->toArray();
+
 
         // Ambil data rekap reguler dalam satu query
         $rekapData = DB::connection('tpp')
