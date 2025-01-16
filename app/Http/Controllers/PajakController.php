@@ -129,6 +129,28 @@ class PajakController extends Controller
             return (string)$item; // Mengubah setiap item menjadi string
         }, $keys->toArray());
 
+        $existingNips = Pajak::where('bulan_tahun_id', $id)
+            ->whereIn('nip', $arrayString)
+            ->pluck('nip')
+            ->toArray();
+
+        // Identifikasi NIP yang tidak ada di tabel Pajak
+        $missingNips = array_diff($arrayString, $existingNips);
+
+        //dd($missingNips, $arrayString);
+        // Jika ada NIP yang tidak ditemukan, tambahkan ke tabel Pajak
+        foreach ($missingNips as $missingNip) {
+            Pajak::create([
+                'bulan_tahun_id' => $id,
+                'nip' => $missingNip,
+                'nama' => DB::connection('tpp')
+                    ->table('rekap_reguler')->where('nip', $missingNip)->first()->nama,
+                'skpd_id' => $skpd_id,
+                'jumlah_pembayaran' => $rekapData[$missingNip] ?? 0, // Default nilai jika tidak ada di $rekapData
+            ]);
+        }
+
+
         $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $arrayString)->update(['skpd_id' => $skpd_id]);
 
 
