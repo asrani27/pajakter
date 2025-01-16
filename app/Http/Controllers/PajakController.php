@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Imports\GajiTppImport;
 use App\Models\Skpd;
 use App\Models\Pajak;
 use App\Models\BulanTahun;
 use Illuminate\Http\Request;
+use App\Imports\GajiTppImport;
 use App\Imports\PegawaiImport;
+use App\Imports\GajiBpjsImport;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
@@ -42,7 +43,26 @@ class PajakController extends Controller
         }
     }
 
-    public function uploadGajiBPJS(Request $req, $id) {}
+    public function uploadGajiBPJS(Request $req, $id)
+    {
+        $validator = Validator::make($req->all(), [
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            Session::flash('error', 'Validasi gagal! Pastikan file yang diunggah sesuai format.');
+            return redirect()->back();
+        }
+
+        try {
+
+            Excel::import(new GajiBpjsImport($id), $req->file('file'));
+
+            return redirect()->back()->with('success', 'Data Gaji berhasil diimport!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('fail', 'Gagal mengimport data: ' . $e->getMessage());
+        }
+    }
 
     public function createBulanTahun()
     {
