@@ -187,7 +187,7 @@ class PajakController extends Controller
 
     public function resetPajak($id, $skpd_id)
     {
-        Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->delete();
+        Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->update(['skpd_id', null]);
         return redirect()->back()->with('success', 'Berhasil Di Clear');
     }
     public function importPegawai(Request $req, $id, $skpd_id)
