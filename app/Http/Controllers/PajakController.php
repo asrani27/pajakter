@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\GajiTppImport;
 use App\Models\Skpd;
 use App\Models\Pajak;
 use App\Models\BulanTahun;
@@ -19,6 +20,29 @@ class PajakController extends Controller
         $data = BulanTahun::orderBy('id', 'DESC')->get();
         return view('superadmin.pajak.index', compact('data'));
     }
+
+    public function uploadGajiTPP(Request $req, $id)
+    {
+        $validator = Validator::make($req->all(), [
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            Session::flash('error', 'Validasi gagal! Pastikan file yang diunggah sesuai format.');
+            return redirect()->back();
+        }
+
+        try {
+
+            Excel::import(new GajiTppImport($id), $req->file('file'));
+
+            return redirect()->back()->with('success', 'Data SKPD berhasil diimport!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('fail', 'Gagal mengimport data: ' . $e->getMessage());
+        }
+    }
+
+    public function uploadGajiBPJS(Request $req, $id) {}
 
     public function createBulanTahun()
     {
@@ -46,57 +70,70 @@ class PajakController extends Controller
     }
     public function tariktpp($id, $bulan, $tahun, $skpd_id)
     {
-        if (strtolower($bulan) == 'januari') {
-            $no = '01';
+
+        // Mapping bulan ke angka
+        $bulanMap = [
+            'januari' => '01',
+            'februari' => '02',
+            'maret' => '03',
+            'april' => '04',
+            'mei' => '05',
+            'juni' => '06',
+            'juli' => '07',
+            'agustus' => '08',
+            'september' => '09',
+            'oktober' => '10',
+            'november' => '11',
+            'desember' => '12',
+        ];
+
+        $no = $bulanMap[strtolower($bulan)] ?? null;
+
+        if (!$no) {
+            Session::flash('error', 'Bulan tidak valid');
+            return back();
         }
-        if (strtolower($bulan) == 'februari') {
-            $no = '02';
-        }
-        if (strtolower($bulan) == 'maret') {
-            $no = '03';
-        }
-        if (strtolower($bulan) == 'april') {
-            $no = '04';
-        }
-        if (strtolower($bulan) == 'mei') {
-            $no = '05';
-        }
-        if (strtolower($bulan) == 'juni') {
-            $no = '06';
-        }
-        if (strtolower($bulan) == 'juli') {
-            $no = '07';
-        }
-        if (strtolower($bulan) == 'agustus') {
-            $no = '08';
-        }
-        if (strtolower($bulan) == 'september') {
-            $no = '09';
-        }
-        if (strtolower($bulan) == 'oktober') {
-            $no = '10';
-        }
-        if (strtolower($bulan) == 'november') {
-            $no = '11';
-        }
-        if (strtolower($bulan) == 'desember') {
-            $no = '12';
-        }
+
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
-        $data->map(function ($item) use ($no, $tahun) {
-            $check = DB::connection('presensi')->table('rekap_reguler')->where('nip', $item->nip)->where('bulan', $no)->where('tahun', $tahun)->first();
 
-            if ($check == null) {
-                $tpp = 0;
-            } else {
-                $tpp = $check->jumlah_pembayaran;
-            }
+        if ($data->isEmpty()) {
+            Session::flash('info', 'Tidak ada data pajak yang ditemukan');
+            return back();
+        }
 
-            $item->tpp = $tpp;
-            $item->save();
-            return $item;
+        // Ambil semua NIP dari data pajak
+        $nips = $data->pluck('nip')->toArray();
+
+        // Ambil data rekap reguler dalam satu query
+        $rekapData = DB::connection('tpp')
+            ->table('rekap_reguler')
+            ->whereIn('nip', $nips)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('jumlah_pembayaran', 'nip'); // Hasilkan array [nip => jumlah_pembayaran]
+
+        // Update data pajak
+        $updatedData = $data->map(function ($item) use ($rekapData) {
+            $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
+            return $item->attributesToArray(); // Siapkan untuk batch update
         });
 
+        // Lakukan batch update
+        Pajak::upsert(
+            $updatedData->map(function ($item) {
+                $pajakInstance = new Pajak($item);
+
+                $item['pph_terutang'] = $pajakInstance->pph_terutang;
+
+                $item['created_at'] = now()->format('Y-m-d H:i:s'); // Format datetime
+                $item['updated_at'] = now()->format('Y-m-d H:i:s');
+                return $item;
+            })->toArray(),
+            ['id'],
+            ['tpp', 'pph_terutang', 'updated_at']
+        );
+
+        Session::flash('success', 'Data TPP berhasil ditarik');
         return back();
     }
     public function showPajak($id, $skpd_id)

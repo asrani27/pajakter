@@ -9,8 +9,10 @@
         <div class="card">
             <div class="card-body table-responsive">
                 <div class="text-center" style="font-size: 20px">
+
                     <strong>SKPD : {{strtoupper($skpd->nama)}}<br />
-                        PERIODE : {{strtoupper($bulanTahun->bulan)}} {{$bulanTahun->tahun}}<br />
+                        PERIODE : KINERJA {{strtoupper($bulanTahun->bulan)}} {{$bulanTahun->tahun}}, DIBAYAR :
+                        {{nextMonth($bulanTahun->bulan, $bulanTahun->tahun)}}<br />
                     </strong>
                 </div>
                 <form method="post" action="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/importpegawai"

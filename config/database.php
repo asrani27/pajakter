@@ -62,15 +62,15 @@ return [
             ]) : [],
         ],
 
-        'presensi' => [
+        'tpp' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE_PRESENSI', 'forge'),
-            'username' => env('DB_USERNAME_PRESENSI', 'forge'),
-            'password' => env('DB_PASSWORD_PRESENSI', ''),
-            'unix_socket' => env('DB_SOCKET_PRESENSI', ''),
+            'database' => env('DB_DATABASE_TPP', 'forge'),
+            'username' => env('DB_USERNAME_TPP', 'forge'),
+            'password' => env('DB_PASSWORD_TPP', ''),
+            'unix_socket' => env('DB_SOCKET_TPP', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
