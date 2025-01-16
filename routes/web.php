@@ -22,8 +22,10 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
     Route::get('/admin/pajakter/{id}', [AdminController::class, 'pajak']);
+    Route::get('/admin/pajakter/{id}/editptkp/{ptkp_id}', [AdminController::class, 'editPtkp']);
+    Route::post('/admin/pajakter/{id}/editptkp/{ptkp_id}', [AdminController::class, 'updatePtkp']);
     Route::get('/admin/bpjs/{id}', [AdminController::class, 'bpjs']);
-    Route::get('/admin/tariktpp/{id}/{bulan}/{tahun}/{skpd_id}', [PajakController::class, 'tariktpp']);
+    Route::get('/admin/tariktpp/{id}/{bulan}/{tahun}/{skpd_id}', [AdminController::class, 'tariktpp']);
 });
 Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/progress', function () {

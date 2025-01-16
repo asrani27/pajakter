@@ -18,6 +18,59 @@ class AdminController extends Controller
         $bulantahun = BulanTahun::get();
         return view('admin.home', compact('bulantahun'));
     }
+
+    public function editPtkp($id, $ptkp_id)
+    {
+        $edit = Pajak::find($ptkp_id);
+        $skpd_id = Auth::user()->skpd_id;
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find(Auth::user()->skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', Auth::user()->skpd_id)->get()->sortByDesc('total_penghasilan');
+        return view('admin.hitung', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data', 'edit'));
+    }
+
+    public function updatePtkp(Request $req, $id, $ptkp_id)
+    {
+        if ($req->ptkp == 'K/0') {
+            $status_kawin = 1;
+            $jumlah_tanggungan = 0;
+        }
+        if ($req->ptkp == 'K/1') {
+            $status_kawin = 1;
+            $jumlah_tanggungan = 1;
+        }
+        if ($req->ptkp == 'K/2') {
+            $status_kawin = 1;
+            $jumlah_tanggungan = 2;
+        }
+        if ($req->ptkp == 'K/3') {
+            $status_kawin = 1;
+            $jumlah_tanggungan = 3;
+        }
+        if ($req->ptkp == 'TK/0') {
+            $status_kawin = 2;
+            $jumlah_tanggungan = 0;
+        }
+        if ($req->ptkp == 'TK/1') {
+            $status_kawin = 2;
+            $jumlah_tanggungan = 1;
+        }
+        if ($req->ptkp == 'TK/2') {
+            $status_kawin = 2;
+            $jumlah_tanggungan = 2;
+        }
+        if ($req->ptkp == 'TK/3') {
+            $status_kawin = 2;
+            $jumlah_tanggungan = 3;
+        }
+
+        Pajak::find($ptkp_id)->update([
+            'status_kawin' => $status_kawin,
+            'jumlah_tanggungan' => $jumlah_tanggungan,
+        ]);
+        Session::flash('success', 'PTKP di update');
+        return redirect('/admin/pajakter/' . $id);
+    }
     public function bpjs($id)
     {
         $skpd_id = Auth::user()->skpd_id;
