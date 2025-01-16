@@ -45,6 +45,8 @@ class GajiTppImport implements ToModel, WithStartRow
                 // Update jumlah_tanggungan jika data sudah ada
                 Pajak::where('id', $pajakId)
                     ->update([
+                        'status_kawin' => $row[2],
+                        'jumlah_tanggungan' => $row[4],
                         'pph_gaji' => $pph_gaji,
                         'gaji' => $gaji
                     ]);
