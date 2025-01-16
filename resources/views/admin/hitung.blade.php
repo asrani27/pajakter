@@ -54,6 +54,8 @@
                         $no =1;
                         @endphp
                         @foreach ($data as $key => $item)
+                        @if ($edit != null)
+
                         @if ($edit->id === $item->id)
                         <tr style="font-size:14px;">
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$no++}}</td>
@@ -93,6 +95,34 @@
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->pph_terutang)}}</td>
                         </tr>
+                        @else
+
+                        <tr style="font-size:14px;">
+                            <td style="border: 1px solid rgb(19, 19, 19);">{{$no++}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nip}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nama}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">{{$item->ptkp}}
+                                <a href="/admin/pajakter/{{$bulanTahun->id}}/editptkp/{{$item->id}}"><i
+                                        class="fa fa-edit"></i></a>
+                            </td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->gaji)}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->tpp)}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->total_penghasilan)}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
+                                {{$item->kelompok}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
+                                {{$item->tarif}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->pph_penghasilan)}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->pph_gaji)}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->pph_terutang)}}</td>
+                        </tr>
+                        @endif
                         @else
                         <tr style="font-size:14px;">
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$no++}}</td>

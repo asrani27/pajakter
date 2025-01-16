@@ -85,7 +85,8 @@ class AdminController extends Controller
         $bulanTahun = BulanTahun::find($id);
         $skpd = Skpd::find(Auth::user()->skpd_id);
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', Auth::user()->skpd_id)->get()->sortByDesc('total_penghasilan');
-        return view('admin.hitung', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
+        $edit = null;
+        return view('admin.hitung', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data', 'edit'));
     }
     public function tariktpp($id, $bulan, $tahun, $skpd_id)
     {
