@@ -48,8 +48,6 @@ class GajiBpjsImport implements ToModel, WithStartRow
                 'bulan_tahun_id' => $this->bulan_tahun_id,
                 'nip' => $row[0],
                 'nama' => $row[1],
-                'status_kawin' => $row[2],
-                'jumlah_tanggungan' => $row[4],
                 'gapok' => $row[6],
                 'tjk' => $row[7],
                 'tjb' => $row[8],
