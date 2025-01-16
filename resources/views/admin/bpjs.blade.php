@@ -57,9 +57,9 @@
                             <th style="border: 1px solid rgb(19, 19, 19)">TJ Fungsional</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">TJ Fungsional Umum</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Tukin &nbsp; &nbsp;
-                                <a href="/progress" class="btn btn-xs btn-default">
+                                {{-- <a href="/progress" class="btn btn-xs btn-default">
                                     <i class="fa fa-recycle"></i>
-                                </a>
+                                </a> --}}
                             </th>
                             <th style="border: 1px solid rgb(19, 19, 19)">TPP</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Sertifikasi</th>
