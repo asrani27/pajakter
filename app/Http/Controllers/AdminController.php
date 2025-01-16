@@ -109,7 +109,6 @@ class AdminController extends Controller
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
 
-
         $collection = collect($rekapData);
         $keys = $collection->keys();
         $arrayString = array_map(function ($item) {
@@ -136,10 +135,7 @@ class AdminController extends Controller
                 'jumlah_pembayaran' => $rekapData[$missingNip] ?? 0, // Default nilai jika tidak ada di $rekapData
             ]);
         }
-
-
         $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $arrayString)->update(['skpd_id' => $skpd_id]);
-
 
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
         if ($data->isEmpty()) {
@@ -149,7 +145,6 @@ class AdminController extends Controller
 
         // Ambil semua NIP dari data pajak
         $nips = $data->pluck('nip')->toArray();
-
 
         // Ambil data rekap reguler dalam satu query
         $rekapData = DB::connection('tpp')
@@ -161,6 +156,8 @@ class AdminController extends Controller
 
         // Update data pajak
         $updatedData = $data->map(function ($item) use ($rekapData) {
+            $item->bpjs_satu_persen = $item->tpp_satu_persen;
+            $item->bpjs_empat_persen = $item->tpp_empat_persen;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
             return $item->attributesToArray(); // Siapkan untuk batch update
         });
@@ -177,7 +174,7 @@ class AdminController extends Controller
                 return $item;
             })->toArray(),
             ['id'],
-            ['tpp', 'pph_terutang', 'updated_at']
+            ['tpp', 'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
         );
 
         Session::flash('success', 'Data TPP berhasil ditarik');
