@@ -31,44 +31,34 @@ class AdminController extends Controller
 
     public function updatePtkp(Request $req, $id, $ptkp_id)
     {
-        if ($req->ptkp == 'K/0') {
-            $status_kawin = 1;
-            $jumlah_tanggungan = 0;
-        }
-        if ($req->ptkp == 'K/1') {
-            $status_kawin = 1;
-            $jumlah_tanggungan = 1;
-        }
-        if ($req->ptkp == 'K/2') {
-            $status_kawin = 1;
-            $jumlah_tanggungan = 2;
-        }
-        if ($req->ptkp == 'K/3') {
-            $status_kawin = 1;
-            $jumlah_tanggungan = 3;
-        }
-        if ($req->ptkp == 'TK/0') {
-            $status_kawin = 2;
-            $jumlah_tanggungan = 0;
-        }
-        if ($req->ptkp == 'TK/1') {
-            $status_kawin = 2;
-            $jumlah_tanggungan = 1;
-        }
-        if ($req->ptkp == 'TK/2') {
-            $status_kawin = 2;
-            $jumlah_tanggungan = 2;
-        }
-        if ($req->ptkp == 'TK/3') {
-            $status_kawin = 2;
-            $jumlah_tanggungan = 3;
+        // Mapping PTKP ke status_kawin dan jumlah_tanggungan
+        $ptkpMap = [
+            'K/0' => [1, 0],
+            'K/1' => [1, 1],
+            'K/2' => [1, 2],
+            'K/3' => [1, 3],
+            'TK/0' => [2, 0],
+            'TK/1' => [2, 1],
+            'TK/2' => [2, 2],
+            'TK/3' => [2, 3],
+        ];
+
+        // Ambil status_kawin dan jumlah_tanggungan berdasarkan PTKP
+        [$status_kawin, $jumlah_tanggungan] = $ptkpMap[$req->ptkp] ?? [null, null];
+
+        // Validasi jika PTKP tidak ditemukan
+        if (is_null($status_kawin) || is_null($jumlah_tanggungan)) {
+            Session::flash('error', 'PTKP tidak valid');
+            return back();
         }
 
+        // Update data pada tabel Pajak
         Pajak::find($ptkp_id)->update([
             'status_kawin' => $status_kawin,
             'jumlah_tanggungan' => $jumlah_tanggungan,
         ]);
-        Session::flash('success', 'PTKP di update');
+
+        Session::flash('success', 'PTKP berhasil diperbarui');
         return redirect('/admin/pajakter/' . $id);
     }
     public function bpjs($id)
