@@ -207,6 +207,13 @@ class PajakController extends Controller
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
 
+        // Ambil pagu juga
+        $nilaiTppData = DB::connection('tpp')
+            ->table('rekap_reguler')
+            ->where('skpd_id', $skpd_id)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('pagu', 'nip');
 
         $collection = collect($rekapData);
         $keys = $collection->keys();
@@ -232,6 +239,7 @@ class PajakController extends Controller
                     ->table('rekap_reguler')->where('nip', $missingNip)->first()->nama,
                 'skpd_id' => $skpd_id,
                 'jumlah_pembayaran' => $rekapData[$missingNip] ?? 0, // Default nilai jika tidak ada di $rekapData
+                'pagu' => $nilaiTppData[$missingNip] ?? 0, // Menambahkan pagu
             ]);
         }
 
@@ -256,13 +264,21 @@ class PajakController extends Controller
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip'); // Hasilkan array [nip => jumlah_pembayaran]
-
+        // Ambil pagu
+        $nilaiTppData = DB::connection('tpp')
+            ->table('rekap_reguler')
+            ->whereIn('nip', $nips)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('pagu', 'nip');
 
         // Update data pajak
-        $updatedData = $data->map(function ($item) use ($rekapData) {
+        $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData) {
+
             $item->bpjs_satu_persen = $item->tpp_satu_persen;
             $item->bpjs_empat_persen = $item->tpp_empat_persen;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
+            $item->pagu = $nilaiTppData[$item->nip] ?? 0;
             return $item->attributesToArray(); // Siapkan untuk batch update
         });
 
@@ -277,10 +293,11 @@ class PajakController extends Controller
                 $item['updated_at'] = now()->format('Y-m-d H:i:s');
                 $item['bpjs_satu_persen'] = $item['bpjs_satu_persen'];
                 $item['bpjs_empat_persen'] = $item['bpjs_empat_persen'];
+                $item['pagu'] = $item['pagu'];
                 return $item;
             })->toArray(),
             ['id'],
-            ['tpp', 'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
+            ['tpp', 'pagu',  'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
         );
 
         Session::flash('success', 'Data TPP berhasil ditarik');

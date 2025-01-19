@@ -57,7 +57,7 @@
                             <th style="border: 1px solid rgb(19, 19, 19)">TJ Jabatan</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">TJ Fungsional</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">TJ Fungsional Umum</th>
-                            <th style="border: 1px solid rgb(19, 19, 19)">Tukin &nbsp; &nbsp;
+                            <th style="border: 1px solid rgb(19, 19, 19)">Pagu TPP &nbsp; &nbsp;
 
 
                             </th>
@@ -107,7 +107,7 @@
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->jumlah_gaji)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
-                                {{number_format($item->tpp)}}</td>
+                                {{number_format($item->pagu)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
                                 {{number_format(0)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">

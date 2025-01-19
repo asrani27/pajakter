@@ -16,7 +16,7 @@ class Pajak extends Model
     }
     public function getJumlahTunjanganAttribute()
     {
-        return $this->tpp;
+        return $this->pagu;
     }
 
     public function getJumlahPenghasilanAttribute()
