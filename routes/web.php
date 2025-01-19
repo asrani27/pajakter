@@ -42,6 +42,10 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/user/delete/{id}', [UserController::class, 'delete']);
 
     Route::get('/superadmin/skpd', [SkpdController::class, 'index']);
+    Route::get('/superadmin/pajakter/{id}/pppk-pajak', [PajakController::class, 'showPppkPajak']);
+    Route::get('/superadmin/pajakter/{id}/pppk-bpjs', [PajakController::class, 'showPppkBpjs']);
+    Route::get('/superadmin/pajakter/pppk/{id}/reset', [PajakController::class, 'resetPPPK']);
+    Route::post('/superadmin/pajakter/pppk/{id}', [PajakController::class, 'uploadGajiPPPK']);
     Route::post('/superadmin/pajakter/gajitpp/{id}', [PajakController::class, 'uploadGajiTPP']);
     Route::post('/superadmin/pajakter/gajibpjs/{id}', [PajakController::class, 'uploadGajiBPJS']);
     Route::get('/superadmin/tariktpp/{id}/{bulan}/{tahun}/{skpd_id}', [PajakController::class, 'tariktpp']);
@@ -54,6 +58,24 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}', [PajakController::class, 'showPajak']);
     Route::post('/superadmin/pajakter/{id}/skpd/{skpd_id}/importpegawai', [PajakController::class, 'importPegawai']);
     Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/bpjs', [PajakController::class, 'showBPJS']);
+
+    Route::post('/superadmin/pajakter/{id}/skpd/{skpd_id}/guru', [PajakController::class, 'uploadTPPGuru']);
+
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/guru', [PajakController::class, 'showPajakGuru']);
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/guru/reset', [PajakController::class, 'resetPajakGuru']);
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/guru/bpjs', [PajakController::class, 'showBpjsGuru']);
+
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/gurusd', [PajakController::class, 'showPajakGuruSD']);
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/gurusd/reset', [PajakController::class, 'resetPajakGuruSD']);
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/gurusd/bpjs', [PajakController::class, 'showBpjsGuruSD']);
+
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/gurusmp', [PajakController::class, 'showPajakGuruSMP']);
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/gurusmp/reset', [PajakController::class, 'resetPajakGuruSMP']);
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/gurusmp/bpjs', [PajakController::class, 'showBpjsGuruSMP']);
+
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/guruteknis', [PajakController::class, 'showPajakGuruTeknis']);
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/guruteknis/reset', [PajakController::class, 'resetPajakGuruTeknis']);
+    Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/guruteknis/bpjs', [PajakController::class, 'showBpjsGuruTeknis']);
 });
 
 Route::middleware(['auth', 'dpw'])->group(function () {

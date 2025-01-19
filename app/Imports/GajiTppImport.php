@@ -30,8 +30,8 @@ class GajiTppImport implements ToModel, WithStartRow
     {
         try {
             $nip =  (string) trim($row[0]);
-            $pph_gaji = $row[11];
-            $gaji = $row[12];
+            $pph_gaji = $row[9];
+            $gaji = $row[10];
 
             // dd(in_array($nip, $this->existingNips), $this->existingNips);
             // dd('d', $nip, $this->existingNips);
@@ -46,7 +46,7 @@ class GajiTppImport implements ToModel, WithStartRow
                 Pajak::where('id', $pajakId)
                     ->update([
                         'status_kawin' => $row[2],
-                        'jumlah_tanggungan' => $row[4],
+                        'jumlah_tanggungan' => $row[3],
                         'pph_gaji' => $pph_gaji,
                         'gaji' => $gaji
                     ]);
@@ -56,9 +56,9 @@ class GajiTppImport implements ToModel, WithStartRow
                     'nip' => $row[0],
                     'nama' => $row[1],
                     'status_kawin' => $row[2],
-                    'jumlah_tanggungan' => $row[4],
-                    'pph_gaji' => $row[11],
-                    'gaji' => $row[12],
+                    'jumlah_tanggungan' => $row[3],
+                    'pph_gaji' => $row[9],
+                    'gaji' => $row[10],
                 ]);
             }
         } catch (\Exception $e) {

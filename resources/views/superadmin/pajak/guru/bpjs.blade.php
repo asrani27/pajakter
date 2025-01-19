@@ -3,14 +3,16 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <a href="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}" class="btn btn-sm btn-default"><i
-                class="fa fa-arrow-left"></i>
+        <a href="/superadmin/pajakter" class="btn btn-sm btn-default"><i class="fa fa-arrow-left"></i>
             Kembali
         </a><br /><br />
         <div class="card">
+            <div class="card-header">
+                @include('superadmin.pajak.guru.menu')
+            </div>
             <div class="card-body table-responsive">
                 <div class="text-center" style="font-size: 20px">
-                    <strong>SKPD : {{strtoupper($skpd->nama)}}<br />
+                    <strong>BPJS GURU <br />
                         PERIODE : {{strtoupper($bulanTahun->bulan)}} {{$bulanTahun->tahun}} (BPJS)<br />
                     </strong>
                 </div>

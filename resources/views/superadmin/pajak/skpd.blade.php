@@ -32,11 +32,17 @@
                                 <td style="border: 1px solid rgb(19, 19, 19)">
                                     <a href="/superadmin/pajakter/{{$id}}/skpd/{{$item->id}}"
                                         class="btn btn-sm {{$item->pajak($id) == false ? 'btn-info' : 'btn-success'}}"><i
-                                            class="fa fa-clipboard"></i> Hitung Pajak</a>
+                                            class="fa fa-clipboard"></i> Pajak PNS</a>
 
                                     <a href="/superadmin/pajakter/{{$id}}/skpd/{{$item->id}}/bpjs"
                                         class="btn btn-sm {{$item->pajak($id) == false ? 'btn-info' : 'btn-success'}}"><i
                                             class="fa fa-clipboard"></i> BPJS</a>
+
+                                    @if ($item->nama == 'Dinas Pendidikan')
+                                    <a href="/superadmin/pajakter/{{$id}}/skpd/{{$item->id}}/guru"
+                                        class="btn btn-sm {{$item->pajak($id) == false ? 'btn-info' : 'btn-success'}}"><i
+                                            class="fa fa-clipboard"></i> Pajak Guru</a>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach

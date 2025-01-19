@@ -8,8 +8,13 @@ use App\Models\BulanTahun;
 use Illuminate\Http\Request;
 use App\Imports\GajiTppImport;
 use App\Imports\PegawaiImport;
+use App\Imports\TppGuruImport;
 use App\Imports\GajiBpjsImport;
+use App\Imports\GajiPppkImport;
+use App\Imports\TppGuruSDImport;
+use App\Imports\TppGuruSMPImport;
 use Illuminate\Support\Facades\DB;
+use App\Imports\TppGuruTeknisImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -22,6 +27,86 @@ class PajakController extends Controller
         return view('superadmin.pajak.index', compact('data'));
     }
 
+    public function pppkPajak()
+    {
+        $data = BulanTahun::orderBy('id', 'DESC')->get();
+        return view('superadmin.pajak.index', compact('data'));
+    }
+    public function showPppkBpjs($id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('status_pegawai', 'PPPK')->get()->sortByDesc('jumlah_penghasilan');
+        return view('superadmin.pajak.pppk.bpjs', compact('id', 'bulanTahun', 'data'));
+    }
+    public function showPppkPajak($id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('status_pegawai', 'PPPK')->get()->sortByDesc('total_penghasilan');
+        return view('superadmin.pajak.pppk.hitung', compact('id', 'bulanTahun', 'data'));
+    }
+    public function pppkBpjs()
+    {
+        $data = BulanTahun::orderBy('id', 'DESC')->get();
+        return view('superadmin.pajak.index', compact('data'));
+    }
+
+
+    public function uploadTPPGuru(Request $req, $id)
+    {
+        $validator = Validator::make($req->all(), [
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            Session::flash('error', 'Validasi gagal! Pastikan file yang diunggah sesuai format.');
+            return redirect()->back();
+        }
+
+        try {
+
+            if ($req->button == 'sheet1') {
+                $data = Excel::import(new TppGuruImport($id), $req->file('file'));
+            }
+            if ($req->button == 'sheet2') {
+                $data = Excel::import(new TppGuruSDImport($id), $req->file('file'));
+            }
+            if ($req->button == 'sheet3') {
+
+                $data = Excel::import(new TppGuruSMPImport($id), $req->file('file'));
+            }
+            if ($req->button == 'sheet4') {
+                $data = Excel::import(new TppGuruTeknisImport($id), $req->file('file'));
+            }
+
+            return redirect()->back()->with('success', 'berhasil diimport!');
+        } catch (\Exception $e) {
+
+            Session::flash('error', 'Gagal mengimport data: ' . $e->getMessage());
+            return redirect()->back();
+        }
+    }
+    public function uploadGajiPPPK(Request $req, $id)
+    {
+        $validator = Validator::make($req->all(), [
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            Session::flash('error', 'Validasi gagal! Pastikan file yang diunggah sesuai format.');
+            return redirect()->back();
+        }
+
+        try {
+
+            Excel::import(new GajiPppkImport($id), $req->file('file'));
+
+            return redirect()->back()->with('success', 'berhasil diimport!');
+        } catch (\Exception $e) {
+
+            Session::flash('error', 'Gagal mengimport data: ' . $e->getMessage());
+            return redirect()->back();
+        }
+    }
     public function uploadGajiTPP(Request $req, $id)
     {
         $validator = Validator::make($req->all(), [
@@ -37,7 +122,7 @@ class PajakController extends Controller
 
             Excel::import(new GajiTppImport($id), $req->file('file'));
 
-            return redirect()->back()->with('success', 'Data SKPD berhasil diimport!');
+            return redirect()->back()->with('success', 'Data berhasil diimport!');
         } catch (\Exception $e) {
 
             Session::flash('error', 'Gagal mengimport data: ' . $e->getMessage());
@@ -154,7 +239,7 @@ class PajakController extends Controller
         $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $arrayString)->update(['skpd_id' => $skpd_id]);
 
 
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get();
         if ($data->isEmpty()) {
             Session::flash('info', 'Tidak ada data pajak yang ditemukan');
             return back();
@@ -171,6 +256,7 @@ class PajakController extends Controller
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip'); // Hasilkan array [nip => jumlah_pembayaran]
+
 
         // Update data pajak
         $updatedData = $data->map(function ($item) use ($rekapData) {
@@ -204,17 +290,100 @@ class PajakController extends Controller
     {
         $bulanTahun = BulanTahun::find($id);
         $skpd = Skpd::find($skpd_id);
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get()->sortByDesc('total_penghasilan');
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get()->sortByDesc('total_penghasilan');
         return view('superadmin.pajak.hitung', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
+    }
+
+    public function showPajakGuru($id, $skpd_id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find($skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', '1')->get()->sortByDesc('total_penghasilan');
+        return view('superadmin.pajak.guru.sheet1', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
+    }
+    public function showBpjsGuru($id, $skpd_id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find($skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', '1')->get()->sortByDesc('total_penghasilan');
+        return view('superadmin.pajak.guru.bpjs', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
+    }
+    public function showPajakGuruSD($id, $skpd_id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find($skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', '2')->get()->sortByDesc('total_penghasilan');
+        return view('superadmin.pajak.guru.sheet2', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
+    }
+    public function showBpjsGuruSD($id, $skpd_id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find($skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', '2')->get()->sortByDesc('total_penghasilan');
+        return view('superadmin.pajak.guru.bpjs', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
+    }
+    public function showPajakGuruSMP($id, $skpd_id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find($skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', '3')->get()->sortByDesc('total_penghasilan');
+        return view('superadmin.pajak.guru.sheet3', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
+    }
+    public function showBpjsGuruSMP($id, $skpd_id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find($skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', '3')->get()->sortByDesc('total_penghasilan');
+        return view('superadmin.pajak.guru.bpjs', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
+    }
+    public function showPajakGuruTeknis($id, $skpd_id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find($skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', '4')->get()->sortByDesc('total_penghasilan');
+        return view('superadmin.pajak.guru.sheet4', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
+    }
+    public function showBpjsGuruTeknis($id, $skpd_id)
+    {
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find($skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', '4')->get()->sortByDesc('total_penghasilan');
+        return view('superadmin.pajak.guru.bpjs', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
     }
     public function showBPJS($id, $skpd_id)
     {
         $bulanTahun = BulanTahun::find($id);
         $skpd = Skpd::find($skpd_id);
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get()->sortByDesc('jumlah_penghasilan');
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get()->sortByDesc('jumlah_penghasilan');
         return view('superadmin.pajak.bpjs', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
     }
 
+    public function resetPPPK($id)
+    {
+        Pajak::where('bulan_tahun_id', $id)->where('status_pegawai', 'PPPK')->delete();
+        return redirect()->back()->with('success', 'Berhasil Di Clear');
+    }
+
+    public function resetPajakGuruSD($id, $skpd_id)
+    {
+        Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', 2)->update(['skpd_id' => null]);
+        return redirect()->back()->with('success', 'Berhasil Di Clear');
+    }
+    public function resetPajakGuruSMP($id, $skpd_id)
+    {
+        Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', 3)->update(['skpd_id' => null]);
+        return redirect()->back()->with('success', 'Berhasil Di Clear');
+    }
+    public function resetPajakGuruTeknis($id, $skpd_id)
+    {
+        Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', 4)->update(['skpd_id' => null]);
+        return redirect()->back()->with('success', 'Berhasil Di Clear');
+    }
+    public function resetPajakGuru($id, $skpd_id)
+    {
+        Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('sheet', 1)->update(['skpd_id' => null]);
+        return redirect()->back()->with('success', 'Berhasil Di Clear');
+    }
     public function resetPajak($id, $skpd_id)
     {
         Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->update(['skpd_id' => null]);
