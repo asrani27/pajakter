@@ -37,6 +37,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/pajakter/{id}/skpd/{skpd_id}/guru/bpjs', [PajakController::class, 'showBpjsGuru']);
     Route::get('/admin/pajakter/{id}/skpd/{skpd_id}/gurusd/bpjs', [PajakController::class, 'showBpjsGuruSD']);
     Route::get('/admin/pajakter/{id}/skpd/{skpd_id}/gurusmp/bpjs', [PajakController::class, 'showBpjsGuruSMP']);
+
     Route::get('/admin/pajakter/{id}/skpd/{skpd_id}/guruteknis/bpjs', [PajakController::class, 'showBpjsGuruTeknis']);
     Route::get('/admin/pajakter/{id}/exportbpjs/{skpd_id}/sheet/{nosheet}', [PajakController::class, 'exportBpjsSheet']);
 });
