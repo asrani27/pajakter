@@ -486,6 +486,17 @@ class PajakController extends Controller
             $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $row++;
         }
+        // Menambahkan SUM di bawah setiap kolom yang diinginkan
+        $sheet->setCellValue('E' . ($row), '=SUM(E' . $rowStart . ':E' . ($row - 1) . ')');
+        $sheet->setCellValue('F' . ($row), '=SUM(F' . $rowStart . ':F' . ($row - 1) . ')');
+        $sheet->setCellValue('G' . ($row), '=SUM(G' . $rowStart . ':G' . ($row - 1) . ')');
+        $sheet->setCellValue('J' . ($row), '=SUM(J' . $rowStart . ':J' . ($row - 1) . ')');
+        $sheet->setCellValue('K' . ($row), '=SUM(K' . $rowStart . ':K' . ($row - 1) . ')');
+        $sheet->setCellValue('L' . ($row), '=SUM(L' . $rowStart . ':L' . ($row - 1) . ')');
+
+        // Format untuk SUM (bold dan rata tengah)
+        $sheet->getStyle('E' . ($row) . ':L' . ($row))->getFont()->setBold(true);
+        $sheet->getStyle('E' . ($row) . ':L' . ($row))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
         // Atur auto size untuk kolom dari A hingga D
         foreach (range('A', 'L') as $col) {
