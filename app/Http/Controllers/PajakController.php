@@ -445,12 +445,18 @@ class PajakController extends Controller
         $templatePath = storage_path('app/public/excel/pajak_pppk.xlsx');
         $spreadsheet = IOFactory::load($templatePath);
         $sheet = $spreadsheet->getActiveSheet();
+        $bulanTahun = BulanTahun::find($id);
+        $sheet->setCellValue('A1', 'PPPK');
+        $sheet->setCellValue('A2', 'PERIODE : ' . $bulanTahun->bulan . ' ' . $bulanTahun->tahun);
 
+        // Menambahkan format: Membuat teks tebal dan memusatkan teks
+        $sheet->getStyle('A1:A2')->getFont()->setBold(true);
 
         $pajaks = Pajak::where('bulan_tahun_id', $id)->where('status_pegawai', 'PPPK')->get()->sortByDesc('total_penghasilan')->values();
 
         $rowStart = 6; // Mulai dari baris kedua (misalnya)
         $rowEnd = $rowStart + count($pajaks) - 1; // Baris akhir berdasarkan jumlah data
+
 
         $no = 1;
         foreach ($pajaks as $index => $pajak) {
@@ -475,6 +481,9 @@ class PajakController extends Controller
             $sheet->getStyle('J' . $row)->getNumberFormat()->setFormatCode('#,##0');
             $sheet->getStyle('K' . $row)->getNumberFormat()->setFormatCode('#,##0');
             $sheet->getStyle('L' . $row)->getNumberFormat()->setFormatCode('#,##0');
+
+            $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $row++;
         }
 
