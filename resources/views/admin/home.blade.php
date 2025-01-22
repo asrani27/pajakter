@@ -41,6 +41,10 @@
                                             class="fa fa-eye"></i> PAJAK</a>
                                     <a href="/admin/bpjs/{{$item->id}}/" class="btn btn-sm btn-info"><i
                                             class="fa fa-eye"></i> BPJS</a>
+                                    @if (Auth::user()->skpd_id == 1)
+                                    <a href="/admin/pajakter/{{$item->id}}/skpd/{{Auth::user()->skpd_id}}/guru"
+                                        class="btn btn-sm btn-info"><i class="fa fa-users"></i> GURU</a>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach

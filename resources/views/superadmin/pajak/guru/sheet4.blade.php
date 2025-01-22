@@ -22,6 +22,10 @@
                 <form method="post" action="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guru"
                     enctype="multipart/form-data">
                     @csrf
+                    @if (Auth::user()->skpd_id == 1)
+                    <a href="/admin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}/sheet/4" class="btn btn-sm btn-primary">
+                        <i class="fa fa-file-excel"></i> Export Pajak</a>
+                    @else
                     <input type="file" name="file" required>
                     <button type="submit" class="btn btn-sm btn-info" name="button" value="sheet4">
                         <i class="fa fa-upload"></i> UPLOAD GAJI</button>
@@ -32,6 +36,7 @@
                     <a href="/superadmin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}/sheet/4"
                         class="btn btn-sm btn-primary">
                         <i class="fa fa-file-excel"></i> Export Pajak</a>
+                    @endif
 
 
                 </form>
