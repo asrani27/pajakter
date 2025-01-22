@@ -15,7 +15,11 @@
                         {{nextMonth($bulanTahun->bulan, $bulanTahun->tahun)}}<br />
                     </strong>
                 </div>
-
+                <a href="/admin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}" class="btn btn-sm btn-primary">
+                    <i class="fa fa-file-excel"></i> Export Pajak</a>
+                <a href="/admin/pajakter/{{$id}}/exportbpjs/{{$skpd_id}}" class="btn btn-sm btn-primary">
+                    <i class="fa fa-file-excel"></i> Export BPJS</a>
+                <br />
                 {{-- <a href="/admin/pajakter/{{$id}}/skpd/{{$skpd_id}}/reset" class="btn btn-sm btn-danger"
                     onclick="return confirm('Yakin Di Hapus?');">
                     <i class="fa fa-times"></i> CLEAR DATA</a> --}}

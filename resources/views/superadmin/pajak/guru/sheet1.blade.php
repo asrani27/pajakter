@@ -29,8 +29,9 @@
                     <a href="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guru/reset" class="btn btn-sm btn-danger"
                         onclick="return confirm('Yakin Di Hapus?');">
                         <i class="fa fa-times"></i> CLEAR DATA</a>
-                    <a href="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guru/bpjs" class="btn btn-sm btn-info">
-                        <i class="fa fa-university"></i> BPJS</a>
+                    <a href="/superadmin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}/sheet/1"
+                        class="btn btn-sm btn-primary">
+                        <i class="fa fa-file-excel"></i> Export Pajak</a>
 
                 </form>
                 <br />

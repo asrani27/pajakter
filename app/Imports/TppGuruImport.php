@@ -41,6 +41,7 @@ class TppGuruImport implements ToModel, WithStartRow
                 ->update([
                     'skpd_id' => 1,
                     'tpp' => $row[3],
+                    'pagu' => $row[3],
                     'status_pegawai' => 'GURU',
                     'sheet' => 1,
                 ]);

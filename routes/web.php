@@ -26,6 +26,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/pajakter/{id}/editptkp/{ptkp_id}', [AdminController::class, 'updatePtkp']);
     Route::get('/admin/bpjs/{id}', [AdminController::class, 'bpjs']);
     Route::get('/admin/tariktpp/{id}/{bulan}/{tahun}/{skpd_id}', [AdminController::class, 'tariktpp']);
+
+    Route::get('/admin/pajakter/{id}/exportpajak/{skpd_id}', [PajakController::class, 'exportPajakSKPD']);
+    Route::get('/admin/pajakter/{id}/exportbpjs/{skpd_id}', [PajakController::class, 'exportBpjsSKPD']);
 });
 Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/progress', function () {
@@ -83,56 +86,9 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 
     Route::get('/superadmin/pajakter/{id}/exportpajak/{skpd_id}', [PajakController::class, 'exportPajakSKPD']);
     Route::get('/superadmin/pajakter/{id}/exportbpjs/{skpd_id}', [PajakController::class, 'exportBpjsSKPD']);
-});
 
-Route::middleware(['auth', 'dpw'])->group(function () {
-    Route::get('/dpw', [DPWController::class, 'index']);
-});
-
-Route::middleware(['auth', 'dpd'])->group(function () {
-    Route::get('/dpd', [DPDController::class, 'index']);
-    Route::get('/dpd/rfk', [RFKController::class, 'index']);
-    Route::get('/dpd/rfk/create', [RFKController::class, 'create']);
-    Route::post('/dpd/rfk/create', [RFKController::class, 'store']);
-    Route::get('/dpd/rfk/edit/{id}', [RFKController::class, 'edit']);
-    Route::post('/dpd/rfk/edit/{id}', [RFKController::class, 'update']);
-    Route::get('/dpd/rfk/delete/{id}', [RFKController::class, 'delete']);
-    Route::get('/dpd/rfk/detail/{id}/akun', [RFKController::class, 'akun']);
-
-    Route::get('/dpd/rfk/detail/{id}/okk', [RFKController::class, 'okk']);
-    Route::post('/dpd/rfk/detail/{id}/okk', [RFKController::class, 'okkStore']);
-    Route::get('/dpd/rfk/detail/{id}/okk/edit/{okk_id}', [RFKController::class, 'okkEdit']);
-    Route::post('/dpd/rfk/detail/{id}/okk/edit/{okk_id}', [RFKController::class, 'okkUpdate']);
-    Route::get('/dpd/rfk/detail/{id}/okk/delete/{okk_id}', [RFKController::class, 'okkDelete']);
-    Route::get('/dpd/rfk/detail/{id}/okk/sub/{okk_id}', [RFKController::class, 'okkSub']);
-    Route::post('/dpd/rfk/detail/{id}/okk/sub/{okk_id}', [RFKController::class, 'okkSubStore']);
-    Route::get('/dpd/rfk/detail/{id}/okk/sub/{okk_id}/delete/{sub_id}', [RFKController::class, 'okkSubDelete']);
-    Route::get('/dpd/rfk/detail/{id}/okk/sub/{okk_id}/edit/{sub_id}', [RFKController::class, 'okkSubEdit']);
-    Route::post('/dpd/rfk/detail/{id}/okk/sub/{okk_id}/edit/{sub_id}', [RFKController::class, 'okkSubUpdate']);
-
-    Route::get('/dpd/rfk/detail/{id}/hp', [RFKController::class, 'hp']);
-    Route::post('/dpd/rfk/detail/{id}/hp', [RFKController::class, 'hpStore']);
-    Route::get('/dpd/rfk/detail/{id}/hp/edit/{hp_id}', [RFKController::class, 'hpEdit']);
-    Route::post('/dpd/rfk/detail/{id}/hp/edit/{hp_id}', [RFKController::class, 'hpUpdate']);
-    Route::get('/dpd/rfk/detail/{id}/hp/delete/{hp_id}', [RFKController::class, 'hpDelete']);
-    Route::get('/dpd/rfk/detail/{id}/hp/sub/{hp_id}', [RFKController::class, 'hpSub']);
-    Route::post('/dpd/rfk/detail/{id}/hp/sub/{hp_id}', [RFKController::class, 'hpSubStore']);
-    Route::get('/dpd/rfk/detail/{id}/hp/sub/{hp_id}/delete/{sub_id}', [RFKController::class, 'hpSubDelete']);
-    Route::get('/dpd/rfk/detail/{id}/hp/sub/{hp_id}/edit/{sub_id}', [RFKController::class, 'hpSubEdit']);
-    Route::post('/dpd/rfk/detail/{id}/hp/sub/{hp_id}/edit/{sub_id}', [RFKController::class, 'hpSubUpdate']);
-
-
-    Route::get('/dpd/rfk/detail/{id}/pp', [RFKController::class, 'pp']);
-    Route::get('/dpd/rfk/detail/{id}/kdln', [RFKController::class, 'kdln']);
-    Route::get('/dpd/rfk/detail/{id}/diklat', [RFKController::class, 'diklat']);
-    Route::get('/dpd/rfk/detail/{id}/penelitian', [RFKController::class, 'penelitian']);
-    Route::get('/dpd/rfk/detail/{id}/sisinfokom', [RFKController::class, 'sisinfokom']);
-    Route::get('/dpd/rfk/detail/{id}/pelayanan', [RFKController::class, 'pelayanan']);
-    Route::get('/dpd/rfk/detail/{id}/kesejahteraan', [RFKController::class, 'kesejahteraan']);
-});
-
-Route::middleware(['auth', 'dpk'])->group(function () {
-    Route::get('/dpk', [DPKController::class, 'index']);
+    Route::get('/superadmin/pajakter/{id}/exportpajak/{skpd_id}/sheet/{nosheet}', [PajakController::class, 'exportPajakSheet']);
+    Route::get('/superadmin/pajakter/{id}/exportbpjs/{skpd_id}/sheet/{nosheet}', [PajakController::class, 'exportBpjsSheet']);
 });
 
 

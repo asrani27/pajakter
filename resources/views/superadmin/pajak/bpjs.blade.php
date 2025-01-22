@@ -155,7 +155,7 @@
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($data->sum('jumlah_gaji'))}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
-                                {{number_format($data->sum('tpp'))}}</td>
+                                {{number_format($data->sum('pagu'))}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format(0)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">

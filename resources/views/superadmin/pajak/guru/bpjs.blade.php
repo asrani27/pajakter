@@ -16,19 +16,12 @@
                         PERIODE : {{strtoupper($bulanTahun->bulan)}} {{$bulanTahun->tahun}} (BPJS)<br />
                     </strong>
                 </div>
-                {{-- <form method="post" action="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/importpegawai"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <input type="file" name="file" required>
-                    <button type="submit" class="btn btn-sm btn-info">
-                        <i class="fa fa-upload"></i> UPLOAD GAJI ASN</button>
 
-                    <a href="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/reset" class="btn btn-sm btn-danger"
-                        onclick="return confirm('Yakin Di Hapus?');">
-                        <i class="fa fa-times"></i> CLEAR DATA</a>
+                <a href="/superadmin/pajakter/{{$id}}/exportbpjs/{{$skpd_id}}/sheet/{{$nosheet}}"
+                    class="btn btn-sm btn-primary">
+                    <i class="fa fa-file-excel"></i> Export BPJS</a>
 
-                </form>
-                <br /> --}}
+                <br /><br />
                 <table class="table table-hover text-nowrap table-sm">
                     <thead style="background-color:#3d8b99;">
                         <tr class="text-white" style="font-size:14px; text-align:center;">
@@ -109,7 +102,7 @@
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->jumlah_gaji)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
-                                {{number_format($item->tpp)}}</td>
+                                {{number_format($item->pagu)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
                                 {{number_format(0)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
@@ -157,7 +150,7 @@
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($data->sum('jumlah_gaji'))}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
-                                {{number_format($data->sum('tpp'))}}</td>
+                                {{number_format($data->sum('pagu'))}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format(0)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
