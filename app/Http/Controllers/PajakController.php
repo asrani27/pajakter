@@ -635,6 +635,154 @@ class PajakController extends Controller
 
         return response()->download($filePath);
     }
+    public function exportBpjsSKPD($id, $skpd_id)
+    {
+
+        $templatePath = storage_path('app/public/excel/bpjs.xlsx');
+        $spreadsheet = IOFactory::load($templatePath);
+        $sheet = $spreadsheet->getActiveSheet();
+        $skpd = Skpd::find($skpd_id);
+
+        $bulanTahun = BulanTahun::find($id);
+
+        $sheet->mergeCells('A1:L1');
+        $sheet->mergeCells('A2:L2');
+        $sheet->setCellValue('A1', strtoupper($skpd->nama));
+        $sheet->setCellValue('A2', 'PERIODE : ' . $bulanTahun->bulan . ' ' . $bulanTahun->tahun);
+
+        // Menambahkan format: Membuat teks tebal dan memusatkan teks
+        $sheet->getStyle('A1:A2')->getFont()->setBold(true);
+        //dd($skpd);
+        $bpjs = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get()->sortByDesc('total_penghasilan')->values();
+        if ($bpjs->count() === 0) {
+            Session::flash('info', 'Tidak ada Data Untuk Di Export');
+            return redirect()->back();
+        }
+        $rowStart = 6; // Mulai dari baris kedua (misalnya)
+        $rowEnd = $rowStart + count($bpjs) - 1; // Baris akhir berdasarkan jumlah data
+
+
+        $no = 1;
+        foreach ($bpjs as $index => $bpj) {
+            $row = $rowStart + $index;
+            $sheet->setCellValue('A' . $row, $no++);
+            $sheet->setCellValue('B' . $row, "'" . $bpj->nip);
+            $sheet->setCellValue('C' . $row, $bpj->nama);
+            $sheet->setCellValue('D' . $row, $bpj->gapok);
+            $sheet->setCellValue('E' . $row, $bpj->tjk);
+            $sheet->setCellValue('F' . $row, $bpj->tjb);
+            $sheet->setCellValue('G' . $row, $bpj->tjf);
+            $sheet->setCellValue('H' . $row, $bpj->tjfu);
+            $sheet->setCellValue('I' . $row, $bpj->jumlah_gaji);
+            $sheet->setCellValue('J' . $row, $bpj->pagu);
+            $sheet->setCellValue('K' . $row, 0);
+            $sheet->setCellValue('L' . $row, 0);
+            $sheet->setCellValue('M' . $row, 0);
+            $sheet->setCellValue('N' . $row, $bpj->jumlah_tunjangan);
+            $sheet->setCellValue('O' . $row, $bpj->jumlah_penghasilan);
+            $sheet->setCellValue('P' . $row, $bpj->iuran_satu_persen);
+            $sheet->setCellValue('Q' . $row, $bpj->iuran_empat_persen);
+            $sheet->setCellValue('R' . $row, $bpj->gaji_satu_persen);
+            $sheet->setCellValue('S' . $row, $bpj->gaji_empat_persen);
+            $sheet->setCellValue('T' . $row, $bpj->tpp_satu_persen);
+            $sheet->setCellValue('U' . $row, $bpj->tpp_empat_persen);
+            // $sheet->setCellValue('F' . $row, $pajak->tpp);
+            // $sheet->setCellValue('G' . $row, $pajak->total_penghasilan);
+            // $sheet->setCellValue('H' . $row, $pajak->kelompok);
+            // $sheet->setCellValue('I' . $row, $pajak->tarif);
+            // $sheet->setCellValue('J' . $row, $pajak->pph_penghasilan);
+            // $sheet->setCellValue('K' . $row, $pajak->pph_gaji);
+            // $sheet->setCellValue('L' . $row, $pajak->pph_terutang);
+
+            $sheet->getStyle('D' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('E' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('F' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('G' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('H' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('I' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('J' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('K' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('L' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('M' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('N' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('O' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('P' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('Q' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('R' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('S' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('T' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('U' . $row)->getNumberFormat()->setFormatCode('#,##0');
+
+            // $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            // $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $row++;
+        }
+        // Menambahkan SUM di bawah setiap kolom yang diinginkan
+        $sheet->setCellValue('D' . ($row), '=SUM(D' . $rowStart . ':D' . ($row - 1) . ')');
+        $sheet->setCellValue('E' . ($row), '=SUM(E' . $rowStart . ':E' . ($row - 1) . ')');
+        $sheet->setCellValue('F' . ($row), '=SUM(F' . $rowStart . ':F' . ($row - 1) . ')');
+        $sheet->setCellValue('G' . ($row), '=SUM(G' . $rowStart . ':G' . ($row - 1) . ')');
+        $sheet->setCellValue('J' . ($row), '=SUM(J' . $rowStart . ':J' . ($row - 1) . ')');
+        $sheet->setCellValue('K' . ($row), '=SUM(K' . $rowStart . ':K' . ($row - 1) . ')');
+        $sheet->setCellValue('L' . ($row), '=SUM(L' . $rowStart . ':L' . ($row - 1) . ')');
+        $sheet->setCellValue('M' . ($row), '=SUM(M' . $rowStart . ':M' . ($row - 1) . ')');
+        $sheet->setCellValue('N' . ($row), '=SUM(N' . $rowStart . ':N' . ($row - 1) . ')');
+        $sheet->setCellValue('O' . ($row), '=SUM(O' . $rowStart . ':O' . ($row - 1) . ')');
+        $sheet->setCellValue('P' . ($row), '=SUM(P' . $rowStart . ':P' . ($row - 1) . ')');
+        $sheet->setCellValue('Q' . ($row), '=SUM(Q' . $rowStart . ':Q' . ($row - 1) . ')');
+        $sheet->setCellValue('R' . ($row), '=SUM(R' . $rowStart . ':R' . ($row - 1) . ')');
+        $sheet->setCellValue('S' . ($row), '=SUM(S' . $rowStart . ':S' . ($row - 1) . ')');
+        $sheet->setCellValue('T' . ($row), '=SUM(T' . $rowStart . ':T' . ($row - 1) . ')');
+        $sheet->setCellValue('U' . ($row), '=SUM(U' . $rowStart . ':U' . ($row - 1) . ')');
+
+        // Format untuk SUM (bold dan rata tengah)
+        $sheet->getStyle('D' . ($row) . ':U' . ($row))->getFont()->setBold(true);
+        $sheet->getStyle('D' . ($row) . ':U' . ($row))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+
+        $sheet->getStyle('D' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('E' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('F' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('G' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('H' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('I' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('J' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('K' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('L' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('M' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('N' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('O' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('P' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('Q' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('R' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('S' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('T' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('U' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        // Menambahkan warna latar belakang pada baris SUM
+        $sheet->getStyle('D' . ($row) . ':U' . ($row))
+            ->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setRGB('FFFF00'); // Menggunakan warna kuning (FFFF00)
+        // Atur auto size untuk kolom dari A hingga D
+        foreach (range('A', 'U') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Menambahkan border untuk seluruh data yang diisi
+        $cellRange = 'A' . $rowStart . ':U' . $rowEnd;  // Sesuaikan dengan kolom yang digunakan
+
+        $sheet->getStyle($cellRange)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle($cellRange)->getBorders()->getAllBorders()->setColor(new Color(Color::COLOR_BLACK));
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'BPJS_Report_' . date('YmdHis') . '.xlsx';
+        $filePath = storage_path('app/public/reports/' . $fileName);
+
+        $writer->save($filePath);
+
+
+        return response()->download($filePath);
+    }
+
     public function exportPajakSheet($id, $skpd_id, $nosheet)
     {
 
