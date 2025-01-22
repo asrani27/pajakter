@@ -76,6 +76,9 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/guruteknis', [PajakController::class, 'showPajakGuruTeknis']);
     Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/guruteknis/reset', [PajakController::class, 'resetPajakGuruTeknis']);
     Route::get('/superadmin/pajakter/{id}/skpd/{skpd_id}/guruteknis/bpjs', [PajakController::class, 'showBpjsGuruTeknis']);
+
+    Route::get('/superadmin/pajakter/{id}/exportpajakpppk', [PajakController::class, 'exportPajakPPPK']);
+    Route::get('/superadmin/pajakter/{id}/exportbpjspppk', [PajakController::class, 'exportBpjsPPPK']);
 });
 
 Route::middleware(['auth', 'dpw'])->group(function () {
