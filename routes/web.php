@@ -40,6 +40,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/pajakter/{id}/skpd/{skpd_id}/guruteknis/bpjs', [PajakController::class, 'showBpjsGuruTeknis']);
     Route::get('/admin/pajakter/{id}/exportbpjs/{skpd_id}/sheet/{nosheet}', [PajakController::class, 'exportBpjsSheet']);
+    Route::get('/admin/pajakter/{id}/exportpajak/{skpd_id}/sheet/{nosheet}', [PajakController::class, 'exportPajakSheet']);
 });
 Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/progress', function () {

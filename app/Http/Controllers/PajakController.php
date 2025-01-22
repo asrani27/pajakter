@@ -448,7 +448,7 @@ class PajakController extends Controller
 
     public function exportPajakPPPK($id)
     {
-        $templatePath = storage_path('app/public/excel/pajak.xlsx');
+        $templatePath = public_path('excel/pajak.xlsx');
         $spreadsheet = IOFactory::load($templatePath);
         $sheet = $spreadsheet->getActiveSheet();
         $bulanTahun = BulanTahun::find($id);
@@ -541,7 +541,7 @@ class PajakController extends Controller
     }
     public function exportPajakSKPD($id, $skpd_id)
     {
-        $templatePath = storage_path('app/public/excel/pajak.xlsx');
+        $templatePath = public_path('excel/pajak.xlsx');
         $spreadsheet = IOFactory::load($templatePath);
         $sheet = $spreadsheet->getActiveSheet();
         $skpd = Skpd::find($skpd_id);
@@ -638,7 +638,7 @@ class PajakController extends Controller
     public function exportBpjsSKPD($id, $skpd_id)
     {
 
-        $templatePath = storage_path('app/public/excel/bpjs.xlsx');
+        $templatePath = public_path('excel/bpjs.xlsx');
         $spreadsheet = IOFactory::load($templatePath);
         $sheet = $spreadsheet->getActiveSheet();
         $skpd = Skpd::find($skpd_id);
@@ -786,7 +786,8 @@ class PajakController extends Controller
     public function exportPajakSheet($id, $skpd_id, $nosheet)
     {
 
-        $templatePath = storage_path('app/public/excel/pajak.xlsx');
+        $templatePath = public_path('excel/pajak.xlsx');
+
         $spreadsheet = IOFactory::load($templatePath);
         $sheet = $spreadsheet->getActiveSheet();
         $skpd = Skpd::find($skpd_id);
@@ -884,7 +885,7 @@ class PajakController extends Controller
     public function exportBpjsSheet($id, $skpd_id, $nosheet)
     {
 
-        $templatePath = storage_path('app/public/excel/bpjs.xlsx');
+        $templatePath = public_path('excel/bpjs.xlsx');
         $spreadsheet = IOFactory::load($templatePath);
         $sheet = $spreadsheet->getActiveSheet();
         $skpd = Skpd::find($skpd_id);

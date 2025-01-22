@@ -18,7 +18,7 @@
                 </div>
                 @if (Auth::user()->skpd_id == 1)
                 <a href="/admin/pajakter/{{$id}}/exportbpjs/{{$skpd_id}}/sheet/1" class="btn btn-sm btn-primary">
-                    <i class="fa fa-file-excel"></i> Export Pajak</a>
+                    <i class="fa fa-file-excel"></i> Export BPJS</a>
                 @else
                 <a href="/superadmin/pajakter/{{$id}}/exportbpjs/{{$skpd_id}}/sheet/{{$nosheet}}"
                     class="btn btn-sm btn-primary">
