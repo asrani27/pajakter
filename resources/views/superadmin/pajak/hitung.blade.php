@@ -27,6 +27,10 @@
                         <i class="fa fa-times"></i> CLEAR DATA</a>
                     <a href="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/bpjs" class="btn btn-sm btn-info">
                         <i class="fa fa-university"></i> BPJS</a>
+                    <a href="/superadmin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}" class="btn btn-sm btn-primary">
+                        <i class="fa fa-file-excel"></i> Export Pajak</a>
+                    <a href="/superadmin/pajakter/{{$id}}/exportbpjs/{{$skpd_id}}" class="btn btn-sm btn-primary">
+                        <i class="fa fa-file-excel"></i> Export BPJS</a>
 
                 </form>
                 <br />

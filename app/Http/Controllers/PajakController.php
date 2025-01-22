@@ -442,7 +442,7 @@ class PajakController extends Controller
 
     public function exportPajakPPPK($id)
     {
-        $templatePath = storage_path('app/public/excel/pajak_pppk.xlsx');
+        $templatePath = storage_path('app/public/excel/pajak.xlsx');
         $spreadsheet = IOFactory::load($templatePath);
         $sheet = $spreadsheet->getActiveSheet();
         $bulanTahun = BulanTahun::find($id);
@@ -496,8 +496,109 @@ class PajakController extends Controller
 
         // Format untuk SUM (bold dan rata tengah)
         $sheet->getStyle('E' . ($row) . ':L' . ($row))->getFont()->setBold(true);
-        $sheet->getStyle('E' . ($row) . ':L' . ($row))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('E' . ($row) . ':L' . ($row))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
+        $sheet->getStyle('E' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('F' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('G' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('J' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('K' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('L' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        // Menambahkan warna latar belakang pada baris SUM
+        $sheet->getStyle('E' . ($row) . ':L' . ($row))
+            ->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setRGB('FFFF00'); // Menggunakan warna kuning (FFFF00)
+        // Atur auto size untuk kolom dari A hingga D
+        foreach (range('A', 'L') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Menambahkan border untuk seluruh data yang diisi
+        $cellRange = 'A' . $rowStart . ':L' . $rowEnd;  // Sesuaikan dengan kolom yang digunakan
+
+        $sheet->getStyle($cellRange)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle($cellRange)->getBorders()->getAllBorders()->setColor(new Color(Color::COLOR_BLACK));
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'Pajak_PPPK_Report_' . date('YmdHis') . '.xlsx';
+        $filePath = storage_path('app/public/reports/' . $fileName);
+
+        $writer->save($filePath);
+
+        return response()->download($filePath);
+    }
+    public function exportPajakSKPD($id, $skpd_id)
+    {
+        $templatePath = storage_path('app/public/excel/pajak.xlsx');
+        $spreadsheet = IOFactory::load($templatePath);
+        $sheet = $spreadsheet->getActiveSheet();
+        $skpd = Skpd::find($skpd_id);
+
+        $bulanTahun = BulanTahun::find($id);
+        $sheet->setCellValue('A1', strtoupper($skpd->nama));
+        $sheet->setCellValue('A2', 'PERIODE : ' . $bulanTahun->bulan . ' ' . $bulanTahun->tahun);
+
+        // Menambahkan format: Membuat teks tebal dan memusatkan teks
+        $sheet->getStyle('A1:A2')->getFont()->setBold(true);
+
+        $pajaks = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get()->sortByDesc('total_penghasilan')->values();
+
+        $rowStart = 6; // Mulai dari baris kedua (misalnya)
+        $rowEnd = $rowStart + count($pajaks) - 1; // Baris akhir berdasarkan jumlah data
+
+
+        $no = 1;
+        foreach ($pajaks as $index => $pajak) {
+            $row = $rowStart + $index;
+            $sheet->setCellValue('A' . $row, $no++);
+            $sheet->setCellValue('B' . $row, "'" . $pajak->nip);
+            $sheet->setCellValue('C' . $row, $pajak->nama);
+            $sheet->setCellValue('D' . $row, $pajak->ptkp);
+            $sheet->setCellValue('E' . $row, $pajak->gaji);
+            $sheet->setCellValue('F' . $row, $pajak->tpp);
+            $sheet->setCellValue('G' . $row, $pajak->total_penghasilan);
+            $sheet->setCellValue('H' . $row, $pajak->kelompok);
+            $sheet->setCellValue('I' . $row, $pajak->tarif);
+            $sheet->setCellValue('J' . $row, $pajak->pph_penghasilan);
+            $sheet->setCellValue('K' . $row, $pajak->pph_gaji);
+            $sheet->setCellValue('L' . $row, $pajak->pph_terutang);
+
+            $sheet->getStyle('E' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('F' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('G' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('I' . $row)->getNumberFormat()->setFormatCode('#,##0.00');
+            $sheet->getStyle('J' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('K' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('L' . $row)->getNumberFormat()->setFormatCode('#,##0');
+
+            $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $row++;
+        }
+        // Menambahkan SUM di bawah setiap kolom yang diinginkan
+        $sheet->setCellValue('E' . ($row), '=SUM(E' . $rowStart . ':E' . ($row - 1) . ')');
+        $sheet->setCellValue('F' . ($row), '=SUM(F' . $rowStart . ':F' . ($row - 1) . ')');
+        $sheet->setCellValue('G' . ($row), '=SUM(G' . $rowStart . ':G' . ($row - 1) . ')');
+        $sheet->setCellValue('J' . ($row), '=SUM(J' . $rowStart . ':J' . ($row - 1) . ')');
+        $sheet->setCellValue('K' . ($row), '=SUM(K' . $rowStart . ':K' . ($row - 1) . ')');
+        $sheet->setCellValue('L' . ($row), '=SUM(L' . $rowStart . ':L' . ($row - 1) . ')');
+
+        // Format untuk SUM (bold dan rata tengah)
+        $sheet->getStyle('E' . ($row) . ':L' . ($row))->getFont()->setBold(true);
+        $sheet->getStyle('E' . ($row) . ':L' . ($row))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+
+        $sheet->getStyle('E' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('F' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('G' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('J' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('K' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('L' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        // Menambahkan warna latar belakang pada baris SUM
+        $sheet->getStyle('E' . ($row) . ':L' . ($row))
+            ->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setRGB('FFFF00'); // Menggunakan warna kuning (FFFF00)
         // Atur auto size untuk kolom dari A hingga D
         foreach (range('A', 'L') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
