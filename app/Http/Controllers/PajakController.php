@@ -471,6 +471,7 @@ class PajakController extends Controller
             $sheet->getStyle('E' . $row)->getNumberFormat()->setFormatCode('#,##0');
             $sheet->getStyle('F' . $row)->getNumberFormat()->setFormatCode('#,##0');
             $sheet->getStyle('G' . $row)->getNumberFormat()->setFormatCode('#,##0');
+            $sheet->getStyle('I' . $row)->getNumberFormat()->setFormatCode('#,##0.00');
             $sheet->getStyle('J' . $row)->getNumberFormat()->setFormatCode('#,##0');
             $sheet->getStyle('K' . $row)->getNumberFormat()->setFormatCode('#,##0');
             $sheet->getStyle('L' . $row)->getNumberFormat()->setFormatCode('#,##0');
