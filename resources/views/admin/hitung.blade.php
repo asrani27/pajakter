@@ -19,6 +19,8 @@
                     <i class="fa fa-file-excel"></i> Export Pajak</a>
                 <a href="/admin/pajakter/{{$id}}/exportbpjs/{{$skpd_id}}" class="btn btn-sm btn-primary">
                     <i class="fa fa-file-excel"></i> Export BPJS</a>
+                <a href="/admin/bpjs/{{$id}}" class="btn btn-sm btn-info">
+                    <i class="fa fa-users"></i> BPJS</a>
                 <br />
                 {{-- <a href="/admin/pajakter/{{$id}}/skpd/{{$skpd_id}}/reset" class="btn btn-sm btn-danger"
                     onclick="return confirm('Yakin Di Hapus?');">

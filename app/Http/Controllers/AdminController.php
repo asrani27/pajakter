@@ -157,7 +157,8 @@ class AdminController extends Controller
         }
         $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $arrayString)->update(['skpd_id' => $skpd_id]);
 
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('nip', '197606112005012015')->get();
+        //dd($data);
         if ($data->isEmpty()) {
             Session::flash('info', 'Tidak ada data pajak yang ditemukan');
             return back();
@@ -181,7 +182,8 @@ class AdminController extends Controller
             ->where('tahun', $tahun)
             ->pluck('pagu', 'nip');
         // Update data pajak
-        $updatedData = $data->map(function ($item) use ($rekapData) {
+        $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData) {
+
             $item->bpjs_satu_persen = $item->tpp_satu_persen;
             $item->bpjs_empat_persen = $item->tpp_empat_persen;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
@@ -189,12 +191,18 @@ class AdminController extends Controller
             return $item->attributesToArray(); // Siapkan untuk batch update
         });
 
+        // $updatedData->each(function ($item) {
+        //     $pajakInstance = new Pajak($item);
+        //     if ($pajakInstance->pph_terutang > 999999999) { // Sesuaikan dengan batas kolom
+        //         dd('Nilai terlalu besar:', $item);
+        //     }
+        // });
         // Lakukan batch update
         Pajak::upsert(
             $updatedData->map(function ($item) {
+                //dd($item);
                 $pajakInstance = new Pajak($item);
-
-                $item['pph_terutang'] = $pajakInstance->pph_terutang;
+                $item['pph_terutang'] = (int)$pajakInstance->pph_terutang;
 
                 $item['created_at'] = now()->format('Y-m-d H:i:s'); // Format datetime
                 $item['updated_at'] = now()->format('Y-m-d H:i:s');
