@@ -21,6 +21,8 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
+    Route::get('/admin/pajakter/{id}/pppk', [AdminController::class, 'pppk']);
+    Route::post('/admin/pajakter/{id}/pppk', [AdminController::class, 'uploadTppPPPK']);
     Route::get('/admin/pajakter/{id}', [AdminController::class, 'pajak']);
     Route::get('/admin/pajakter/{id}/editptkp/{ptkp_id}', [AdminController::class, 'editPtkp']);
     Route::post('/admin/pajakter/{id}/editptkp/{ptkp_id}', [AdminController::class, 'updatePtkp']);

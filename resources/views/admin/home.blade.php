@@ -37,6 +37,10 @@
                                 <td style="border: 1px solid rgb(19, 19, 19)">{{$key + 1}}</td>
                                 <td style="border: 1px solid rgb(19, 19, 19)">{{$item->bulan}} {{$item->tahun}}</td>
                                 <td style="border: 1px solid rgb(19, 19, 19)">
+                                    @if (Auth::user()->name = 'Dinas Kesehatan')
+                                    <a href="/admin/pajakter/{{$item->id}}/pppk" class="btn btn-sm btn-info"><i
+                                            class="fa fa-users"></i> PPPK</a>
+                                    @endif
                                     <a href="/admin/pajakter/{{$item->id}}/" class="btn btn-sm btn-info"><i
                                             class="fa fa-eye"></i> PAJAK</a>
                                     <a href="/admin/bpjs/{{$item->id}}/" class="btn btn-sm btn-info"><i

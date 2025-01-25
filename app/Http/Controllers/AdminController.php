@@ -6,9 +6,11 @@ use App\Models\Skpd;
 use App\Models\Pajak;
 use App\Models\BulanTahun;
 use Illuminate\Http\Request;
+use App\Imports\TppPppkDinkes;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
@@ -79,6 +81,15 @@ class AdminController extends Controller
         $edit = null;
         return view('admin.hitung', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data', 'edit'));
     }
+    public function pppk($id)
+    {
+        $skpd_id = Auth::user()->skpd_id;
+        $bulanTahun = BulanTahun::find($id);
+        $skpd = Skpd::find(Auth::user()->skpd_id);
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', 'PPPK')->get()->sortByDesc('total_penghasilan');
+        $edit = null;
+        return view('admin.pppk', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data', 'edit'));
+    }
     public function tariktpp($id, $bulan, $tahun, $skpd_id)
     {
         $bulanMap = [
@@ -109,6 +120,13 @@ class AdminController extends Controller
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
+        // Ambil pagu juga
+        $nilaiTppData = DB::connection('tpp')
+            ->table('rekap_reguler')
+            ->where('skpd_id', $skpd_id)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('pagu', 'nip');
 
         $collection = collect($rekapData);
         $keys = $collection->keys();
@@ -134,6 +152,7 @@ class AdminController extends Controller
                     ->table('rekap_reguler')->where('nip', $missingNip)->first()->nama,
                 'skpd_id' => $skpd_id,
                 'jumlah_pembayaran' => $rekapData[$missingNip] ?? 0, // Default nilai jika tidak ada di $rekapData
+                'pagu' => $nilaiTppData[$missingNip] ?? 0, // Menambahkan pagu
             ]);
         }
         $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $arrayString)->update(['skpd_id' => $skpd_id]);
@@ -154,12 +173,19 @@ class AdminController extends Controller
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip'); // Hasilkan array [nip => jumlah_pembayaran]
-
+        // Ambil pagu
+        $nilaiTppData = DB::connection('tpp')
+            ->table('rekap_reguler')
+            ->whereIn('nip', $nips)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('pagu', 'nip');
         // Update data pajak
         $updatedData = $data->map(function ($item) use ($rekapData) {
             $item->bpjs_satu_persen = $item->tpp_satu_persen;
             $item->bpjs_empat_persen = $item->tpp_empat_persen;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
+            $item->pagu = $nilaiTppData[$item->nip] ?? 0;
             return $item->attributesToArray(); // Siapkan untuk batch update
         });
 
@@ -174,13 +200,21 @@ class AdminController extends Controller
                 $item['updated_at'] = now()->format('Y-m-d H:i:s');
                 $item['bpjs_satu_persen'] = $item['bpjs_satu_persen'];
                 $item['bpjs_empat_persen'] = $item['bpjs_empat_persen'];
+                $item['pagu'] = $item['pagu'];
                 return $item;
             })->toArray(),
             ['id'],
-            ['tpp', 'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
+            ['tpp', 'pagu', 'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
         );
 
         Session::flash('success', 'Data TPP berhasil ditarik');
         return back();
+    }
+
+    public function uploadTppPPPK(Request $req, $id)
+    {
+        Excel::import(new TppPppkDinkes($id), $req->file('file'));
+        Session::flash('success', 'Data TPP PPPK berhasil diupload');
+        return redirect()->back();
     }
 }
