@@ -157,7 +157,7 @@ class AdminController extends Controller
         }
         $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $arrayString)->update(['skpd_id' => $skpd_id]);
 
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('nip', '197606112005012015')->get();
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
         //dd($data);
         if ($data->isEmpty()) {
             Session::flash('info', 'Tidak ada data pajak yang ditemukan');
