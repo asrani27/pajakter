@@ -69,7 +69,7 @@ class AdminController extends Controller
         $skpd_id = Auth::user()->skpd_id;
         $bulanTahun = BulanTahun::find($id);
         $skpd = Skpd::find($skpd_id);
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get()->sortByDesc('jumlah_penghasilan')->values();
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get()->sortByDesc('total_penghasilan');->values();
         return view('admin.bpjs', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data'));
     }
     public function pajak($id)
