@@ -86,7 +86,7 @@ class AdminController extends Controller
         $skpd_id = Auth::user()->skpd_id;
         $bulanTahun = BulanTahun::find($id);
         $skpd = Skpd::find(Auth::user()->skpd_id);
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', 'PPPK')->get()->sortByDesc('total_penghasilan');
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', 'PPPK')->get()->sortBy('nip');
         $edit = null;
         return view('admin.pppk', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data', 'edit'));
     }
@@ -221,7 +221,40 @@ class AdminController extends Controller
 
     public function uploadTppPPPK(Request $req, $id)
     {
-        Excel::import(new TppPppkDinkes($id), $req->file('file'));
+        $data = Excel::import(new TppPppkDinkes($id), $req->file('file'));
+
+        // Array untuk menampung data yang tidak ada di database
+        //$filteredRecords = [];
+
+        // Proses pengecekan data di tabel Pajak
+        // foreach ($data as &$row) {
+        //     $nip = $row[1]; // Ambil NIK (kolom kedua)
+
+        //     // Cek apakah NIK ada di tabel Pajak
+        //     $exists = Pajak::where('nip', $nip)->where('bulan_tahun_id', $id)->exists();
+        //     if (!$exists) {
+        //         // Tambahkan status "tidak ada" dan masukkan ke dalam hasil filter
+        //         $row[4] = 'tidak ada';
+        //         $filteredRecords[] = $row;
+        //     }
+        //     // Tambahkan status ke array
+        //     $row[4] = $exists ? 'ada' : 'tidak ada';
+        // }
+        //199606032024212030
+        //dd($data[77]);
+        // foreach ($filteredRecords as $tidakada) {
+        //     //simpan pajak yang tidak ada data gaji
+        //     $new = new Pajak();
+        //     $new->skpd_id = 34;
+        //     $new->nip = $tidakada[1];
+        //     $new->nama = $tidakada[2];
+        //     $new->tpp = $tidakada[3];
+        //     $new->pagu = $tidakada[3];
+        //     $new->status_pegawai = 'PPPK';
+        //     $new->bulan_tahun_id = $id;
+        //     $new->save();
+        // }
+
         Session::flash('success', 'Data TPP PPPK berhasil diupload');
         return redirect()->back();
     }
