@@ -32,6 +32,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/pajakter/{id}/exportpajak/{skpd_id}', [PajakController::class, 'exportPajakSKPD']);
     Route::get('/admin/pajakter/{id}/exportbpjs/{skpd_id}', [PajakController::class, 'exportBpjsSKPD']);
 
+    Route::get('/admin/pajakter/{id}/exportpajak/{skpd_id}/pppk', [PajakController::class, 'exportPajakSKPDPPPK']);
+    Route::get('/admin/pajakter/{id}/exportbpjs/{skpd_id}/pppk', [PajakController::class, 'exportBpjsSKPDPPPK']);
+
     Route::get('/admin/pajakter/{id}/skpd/{skpd_id}/guru', [PajakController::class, 'showPajakGuru']);
     Route::get('/admin/pajakter/{id}/skpd/{skpd_id}/gurusd', [PajakController::class, 'showPajakGuruSD']);
     Route::get('/admin/pajakter/{id}/skpd/{skpd_id}/gurusmp', [PajakController::class, 'showPajakGuruSMP']);
