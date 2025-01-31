@@ -86,7 +86,7 @@ class AdminController extends Controller
         $skpd_id = Auth::user()->skpd_id;
         $bulanTahun = BulanTahun::find($id);
         $skpd = Skpd::find(Auth::user()->skpd_id);
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', 'PPPK')->get()->sortBy('nip');
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', 'PPPK')->get()->sortByDesc('total_penghasilan');
         $edit = null;
         return view('admin.pppk', compact('skpd', 'id', 'bulanTahun', 'skpd_id', 'data', 'edit'));
     }
