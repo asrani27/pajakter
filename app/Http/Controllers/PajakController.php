@@ -262,6 +262,12 @@ class PajakController extends Controller
         // Ambil semua NIP dari data pajak
         $nips = $data->pluck('nip')->toArray();
 
+        $rekapDataPlt = DB::connection('tpp')
+            ->table('rekap_plt')
+            ->where('skpd_id', $skpd_id)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('jumlah_pembayaran', 'nip');
 
         // Ambil data rekap reguler dalam satu query
         $rekapData = DB::connection('tpp')
@@ -279,11 +285,12 @@ class PajakController extends Controller
             ->pluck('pagu', 'nip');
 
         // Update data pajak
-        $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData) {
+        $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData, $rekapDataPlt) {
 
             $item->bpjs_satu_persen = $item->tpp_satu_persen;
             $item->bpjs_empat_persen = $item->tpp_empat_persen;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
+            $item->tpp_plt = $rekapDataPlt[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
             $item->pagu = $nilaiTppData[$item->nip] ?? 0;
             return $item->attributesToArray(); // Siapkan untuk batch update
         });
@@ -305,7 +312,12 @@ class PajakController extends Controller
             ['id'],
             ['tpp', 'pagu',  'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
         );
+        $updatedData2 = $data->map(function ($item) use ($rekapDataPlt) {
+            $tpp_plt = $rekapDataPlt[$item->nip] ?? 0;
 
+            $item->tpp = $item->tpp + $tpp_plt;
+            return $item->save(); // Siapkan untuk batch update
+        });
         Session::flash('success', 'Data TPP berhasil ditarik');
         return back();
     }
