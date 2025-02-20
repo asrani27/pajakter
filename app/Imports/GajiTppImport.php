@@ -32,7 +32,7 @@ class GajiTppImport implements ToModel, WithStartRow
             $nip =  (string) trim($row[0]);
             $pph_gaji = $row[9];
             $gaji = $row[10];
-            dd($this->bulan_tahun_id, in_array($nip, $this->existingNips));
+
             // dd(in_array($nip, $this->existingNips), $this->existingNips);
             // dd('d', $nip, $this->existingNips);
             // dd($this->existingNips[$nip]);
