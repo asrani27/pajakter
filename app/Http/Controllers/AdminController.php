@@ -115,14 +115,14 @@ class AdminController extends Controller
         }
 
         $rekapData = DB::connection('tpp')
-            ->table('rekap_reguler')
+            ->table('rekap_plt')
             ->where('skpd_id', $skpd_id)
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
         // Ambil pagu juga
         $nilaiTppData = DB::connection('tpp')
-            ->table('rekap_reguler')
+            ->table('rekap_plt')
             ->where('skpd_id', $skpd_id)
             ->where('bulan', $no)
             ->where('tahun', $tahun)
@@ -149,7 +149,7 @@ class AdminController extends Controller
                 'bulan_tahun_id' => $id,
                 'nip' => $missingNip,
                 'nama' => DB::connection('tpp')
-                    ->table('rekap_reguler')->where('nip', $missingNip)->first()->nama,
+                    ->table('rekap_plt')->where('nip', $missingNip)->first()->nama,
                 'skpd_id' => $skpd_id,
                 'jumlah_pembayaran' => $rekapData[$missingNip] ?? 0, // Default nilai jika tidak ada di $rekapData
                 'pagu' => $nilaiTppData[$missingNip] ?? 0, // Menambahkan pagu
@@ -169,14 +169,14 @@ class AdminController extends Controller
 
         // Ambil data rekap reguler dalam satu query
         $rekapData = DB::connection('tpp')
-            ->table('rekap_reguler')
+            ->table('rekap_plt')
             ->whereIn('nip', $nips)
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip'); // Hasilkan array [nip => jumlah_pembayaran]
         // Ambil pagu
         $nilaiTppData = DB::connection('tpp')
-            ->table('rekap_reguler')
+            ->table('rekap_plt')
             ->whereIn('nip', $nips)
             ->where('bulan', $no)
             ->where('tahun', $tahun)
