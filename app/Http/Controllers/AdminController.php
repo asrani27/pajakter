@@ -120,6 +120,7 @@ class AdminController extends Controller
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
+
         // Ambil pagu juga
         $nilaiTppData = DB::connection('tpp')
             ->table('rekap_reguler')
@@ -155,10 +156,13 @@ class AdminController extends Controller
                 'pagu' => $nilaiTppData[$missingNip] ?? 0, // Menambahkan pagu
             ]);
         }
+
+
         $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $arrayString)->update(['skpd_id' => $skpd_id]);
 
-        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
-        //dd($data);
+
+        $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get();
+
         if ($data->isEmpty()) {
             Session::flash('info', 'Tidak ada data pajak yang ditemukan');
             return back();
@@ -166,6 +170,13 @@ class AdminController extends Controller
 
         // Ambil semua NIP dari data pajak
         $nips = $data->pluck('nip')->toArray();
+
+        $rekapDataPlt = DB::connection('tpp')
+            ->table('rekap_plt')
+            ->where('skpd_id', $skpd_id)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('jumlah_pembayaran', 'nip');
 
         // Ambil data rekap reguler dalam satu query
         $rekapData = DB::connection('tpp')
@@ -181,28 +192,24 @@ class AdminController extends Controller
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('pagu', 'nip');
+
         // Update data pajak
-        $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData) {
+        $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData, $rekapDataPlt) {
 
             $item->bpjs_satu_persen = $item->tpp_satu_persen;
             $item->bpjs_empat_persen = $item->tpp_empat_persen;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
+            $item->tpp_plt = $rekapDataPlt[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
             $item->pagu = $nilaiTppData[$item->nip] ?? 0;
             return $item->attributesToArray(); // Siapkan untuk batch update
         });
 
-        // $updatedData->each(function ($item) {
-        //     $pajakInstance = new Pajak($item);
-        //     if ($pajakInstance->pph_terutang > 999999999) { // Sesuaikan dengan batas kolom
-        //         dd('Nilai terlalu besar:', $item);
-        //     }
-        // });
         // Lakukan batch update
         Pajak::upsert(
             $updatedData->map(function ($item) {
-                //dd($item);
                 $pajakInstance = new Pajak($item);
-                $item['pph_terutang'] = (int)$pajakInstance->pph_terutang;
+
+                $item['pph_terutang'] = $pajakInstance->pph_terutang;
 
                 $item['created_at'] = now()->format('Y-m-d H:i:s'); // Format datetime
                 $item['updated_at'] = now()->format('Y-m-d H:i:s');
@@ -212,12 +219,145 @@ class AdminController extends Controller
                 return $item;
             })->toArray(),
             ['id'],
-            ['tpp', 'pagu', 'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
+            ['tpp', 'pagu',  'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
         );
+        $updatedData2 = $data->map(function ($item) use ($rekapDataPlt) {
+            $tpp_plt = $rekapDataPlt[$item->nip] ?? 0;
 
+            $item->tpp = $item->tpp + $tpp_plt;
+            return $item->save(); // Siapkan untuk batch update
+        });
         Session::flash('success', 'Data TPP berhasil ditarik');
         return back();
     }
+    // public function tariktpp($id, $bulan, $tahun, $skpd_id)
+    // {
+    //     $bulanMap = [
+    //         'januari' => '01',
+    //         'februari' => '02',
+    //         'maret' => '03',
+    //         'april' => '04',
+    //         'mei' => '05',
+    //         'juni' => '06',
+    //         'juli' => '07',
+    //         'agustus' => '08',
+    //         'september' => '09',
+    //         'oktober' => '10',
+    //         'november' => '11',
+    //         'desember' => '12',
+    //     ];
+
+    //     $no = $bulanMap[strtolower($bulan)] ?? null;
+
+    //     if (!$no) {
+    //         Session::flash('error', 'Bulan tidak valid');
+    //         return back();
+    //     }
+
+    //     $rekapData = DB::connection('tpp')
+    //         ->table('rekap_reguler')
+    //         ->where('skpd_id', $skpd_id)
+    //         ->where('bulan', $no)
+    //         ->where('tahun', $tahun)
+    //         ->pluck('jumlah_pembayaran', 'nip');
+    //     // Ambil pagu juga
+    //     $nilaiTppData = DB::connection('tpp')
+    //         ->table('rekap_reguler')
+    //         ->where('skpd_id', $skpd_id)
+    //         ->where('bulan', $no)
+    //         ->where('tahun', $tahun)
+    //         ->pluck('pagu', 'nip');
+
+    //     $collection = collect($rekapData);
+    //     $keys = $collection->keys();
+    //     $arrayString = array_map(function ($item) {
+    //         return (string)$item; // Mengubah setiap item menjadi string
+    //     }, $keys->toArray());
+
+    //     $existingNips = Pajak::where('bulan_tahun_id', $id)
+    //         ->whereIn('nip', $arrayString)
+    //         ->pluck('nip')
+    //         ->toArray();
+
+    //     // Identifikasi NIP yang tidak ada di tabel Pajak
+    //     $missingNips = array_diff($arrayString, $existingNips);
+
+    //     //dd($missingNips, $arrayString);
+    //     // Jika ada NIP yang tidak ditemukan, tambahkan ke tabel Pajak
+    //     foreach ($missingNips as $missingNip) {
+    //         Pajak::create([
+    //             'bulan_tahun_id' => $id,
+    //             'nip' => $missingNip,
+    //             'nama' => DB::connection('tpp')
+    //                 ->table('rekap_reguler')->where('nip', $missingNip)->first()->nama,
+    //             'skpd_id' => $skpd_id,
+    //             'jumlah_pembayaran' => $rekapData[$missingNip] ?? 0, // Default nilai jika tidak ada di $rekapData
+    //             'pagu' => $nilaiTppData[$missingNip] ?? 0, // Menambahkan pagu
+    //         ]);
+    //     }
+    //     $list = Pajak::where('bulan_tahun_id', $id)->whereIn('nip', $arrayString)->update(['skpd_id' => $skpd_id]);
+
+    //     $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->get();
+    //     //dd($data);
+    //     if ($data->isEmpty()) {
+    //         Session::flash('info', 'Tidak ada data pajak yang ditemukan');
+    //         return back();
+    //     }
+
+    //     // Ambil semua NIP dari data pajak
+    //     $nips = $data->pluck('nip')->toArray();
+
+    //     // Ambil data rekap reguler dalam satu query
+    //     $rekapData = DB::connection('tpp')
+    //         ->table('rekap_reguler')
+    //         ->whereIn('nip', $nips)
+    //         ->where('bulan', $no)
+    //         ->where('tahun', $tahun)
+    //         ->pluck('jumlah_pembayaran', 'nip'); // Hasilkan array [nip => jumlah_pembayaran]
+    //     // Ambil pagu
+    //     $nilaiTppData = DB::connection('tpp')
+    //         ->table('rekap_reguler')
+    //         ->whereIn('nip', $nips)
+    //         ->where('bulan', $no)
+    //         ->where('tahun', $tahun)
+    //         ->pluck('pagu', 'nip');
+    //     // Update data pajak
+    //     $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData) {
+
+    //         $item->bpjs_satu_persen = $item->tpp_satu_persen;
+    //         $item->bpjs_empat_persen = $item->tpp_empat_persen;
+    //         $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
+    //         $item->pagu = $nilaiTppData[$item->nip] ?? 0;
+    //         return $item->attributesToArray(); // Siapkan untuk batch update
+    //     });
+
+    //     // $updatedData->each(function ($item) {
+    //     //     $pajakInstance = new Pajak($item);
+    //     //     if ($pajakInstance->pph_terutang > 999999999) { // Sesuaikan dengan batas kolom
+    //     //         dd('Nilai terlalu besar:', $item);
+    //     //     }
+    //     // });
+    //     // Lakukan batch update
+    //     Pajak::upsert(
+    //         $updatedData->map(function ($item) {
+    //             //dd($item);
+    //             $pajakInstance = new Pajak($item);
+    //             $item['pph_terutang'] = (int)$pajakInstance->pph_terutang;
+
+    //             $item['created_at'] = now()->format('Y-m-d H:i:s'); // Format datetime
+    //             $item['updated_at'] = now()->format('Y-m-d H:i:s');
+    //             $item['bpjs_satu_persen'] = $item['bpjs_satu_persen'];
+    //             $item['bpjs_empat_persen'] = $item['bpjs_empat_persen'];
+    //             $item['pagu'] = $item['pagu'];
+    //             return $item;
+    //         })->toArray(),
+    //         ['id'],
+    //         ['tpp', 'pagu', 'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
+    //     );
+
+    //     Session::flash('success', 'Data TPP berhasil ditarik');
+    //     return back();
+    // }
 
     public function uploadTppPPPK(Request $req, $id)
     {
