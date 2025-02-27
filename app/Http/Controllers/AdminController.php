@@ -227,6 +227,22 @@ class AdminController extends Controller
             $item->tpp = $item->tpp + $tpp_plt;
             return $item->save(); // Siapkan untuk batch update
         });
+        Pajak::upsert(
+            $updatedData2->map(function ($item) {
+                $pajakInstance = new Pajak($item);
+
+                $item['pph_terutang'] = $pajakInstance->pph_terutang;
+
+                $item['created_at'] = now()->format('Y-m-d H:i:s'); // Format datetime
+                $item['updated_at'] = now()->format('Y-m-d H:i:s');
+                $item['bpjs_satu_persen'] = $item['bpjs_satu_persen'];
+                $item['bpjs_empat_persen'] = $item['bpjs_empat_persen'];
+                $item['pagu'] = $item['pagu'];
+                return $item;
+            })->toArray(),
+            ['id'],
+            ['tpp', 'pagu',  'bpjs_satu_persen', 'bpjs_empat_persen', 'pph_terutang', 'updated_at']
+        );
         Session::flash('success', 'Data TPP berhasil ditarik');
         return back();
     }
