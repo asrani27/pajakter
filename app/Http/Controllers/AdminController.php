@@ -225,7 +225,8 @@ class AdminController extends Controller
             $tpp_plt = $rekapDataPlt[$item->nip] ?? 0;
 
             $item->tpp = $item->tpp + $tpp_plt;
-            return $item->save(); // Siapkan untuk batch update
+            $item->save();
+            return $item->attributesToArray(); // Siapkan untuk batch update
         });
         Pajak::upsert(
             $updatedData2->map(function ($item) {
