@@ -202,8 +202,10 @@ class AdminController extends Controller
             ->where('tahun', $tahun)
             ->pluck('pagu', 'nip');
 
+
         // Update data pajak
         $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData, $rekapDataPlt, $rekapPaguPlt) {
+
 
             $item->bpjs_satu_persen = $item->tpp_satu_persen;
             $item->bpjs_empat_persen = $item->tpp_empat_persen;
