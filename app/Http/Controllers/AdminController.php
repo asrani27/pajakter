@@ -7,6 +7,7 @@ use App\Models\Pajak;
 use App\Models\BulanTahun;
 use Illuminate\Http\Request;
 use App\Imports\TppPppkDinkes;
+use App\Models\PajakTER;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Auth;
@@ -375,9 +376,15 @@ class AdminController extends Controller
     //     Session::flash('success', 'Data TPP berhasil ditarik');
     //     return back();
     // }
-
+    public function hapusPPPK(Request $req, $id)
+    {
+        $remove = Pajak::where('bulan_tahun_id', $id)->where('status_pegawai', 'PPPK')->where('skpd_id', Auth::user()->skpd->id)->update(['skpd_id' => NULL]);
+        Session::flash('success', 'Berhasil Di Hapus');
+        return back();
+    }
     public function uploadTppPPPK(Request $req, $id)
     {
+        $remove = Pajak::where('bulan_tahun_id', $id)->where('status_pegawai', 'PPPK')->where('skpd_id', Auth::user()->skpd->id)->update(['skpd_id' => NULL]);
         $data = Excel::import(new TppPppkDinkes($id), $req->file('file'));
 
         // Array untuk menampung data yang tidak ada di database

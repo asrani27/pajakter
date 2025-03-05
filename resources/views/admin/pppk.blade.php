@@ -20,10 +20,14 @@
                     <input type="file" name="file" required>
                     <button type="submit" class="btn btn-sm btn-info">
                         <i class="fa fa-upload"></i> UPLOAD TPP PPPK</button>
+                    <a href="/admin/pajakter/{{$id}}/hapus/{{$skpd_id}}/pppk" class="btn btn-sm btn-danger">
+                        <i class="fa fa-trash"></i> Hapus PPPK</a>
                     <a href="/admin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}/pppk" class="btn btn-sm btn-primary">
                         <i class="fa fa-file-excel"></i> Export Pajak</a>
                     <a href="/admin/pajakter/{{$id}}/exportbpjs/{{$skpd_id}}/pppk" class="btn btn-sm btn-primary">
                         <i class="fa fa-file-excel"></i> Export BPJS</a>
+                    <a href="/excel/tpp_pppk.xlsx" target="_blank" class="btn btn-sm btn-primary">
+                        <i class="fa fa-file-excel"></i> Download Tempalate TPP PPPK</a>
                 </form>
 
 

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Pajak;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -28,6 +29,7 @@ class TppPppkDinkes implements ToModel, WithStartRow
     }
     public function model(array $row)
     {
+
         $nip =  (string) trim($row[1]);
 
         if (in_array($nip, $this->existingNips)) {
@@ -38,7 +40,7 @@ class TppPppkDinkes implements ToModel, WithStartRow
             // Update jumlah_tanggungan jika data sudah ada
             Pajak::where('id', $pajakId)
                 ->update([
-                    'skpd_id' => 34,
+                    'skpd_id' => Auth::user()->skpd->id,
                     'tpp' => $row[3],
                     'pagu' => $row[3],
                     'status_pegawai' => 'PPPK',
@@ -46,16 +48,16 @@ class TppPppkDinkes implements ToModel, WithStartRow
 
             Log::channel('importtpp')->info("NIP $nip ditemukan pada existingNips dengan ID Pajak: $pajakId");
         } else {
-            Log::channel('importtpp')->warning("NIP $nip tidak ditemukan pada existingNips");
-            $new = new Pajak();
-            $new->nip = $nip;
-            $new->bulan_tahun_id = $this->bulan_tahun_id;
-            $new->nama = $row[2];
-            $new->skpd_id = 34;
-            $new->tpp = $row[3];
-            $new->pagu = $row[3];
-            $new->status_pegawai = 'PPPK';
-            $new->save();
+            // Log::channel('importtpp')->warning("NIP $nip tidak ditemukan pada existingNips");
+            // $new = new Pajak();
+            // $new->nip = $nip;
+            // $new->bulan_tahun_id = $this->bulan_tahun_id;
+            // $new->nama = $row[2];
+            // $new->skpd_id = Auth::user()->skpd->id;
+            // $new->tpp = $row[3];
+            // $new->pagu = $row[3];
+            // $new->status_pegawai = 'PPPK';
+            // $new->save();
         }
     }
     public function startRow(): int

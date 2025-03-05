@@ -27,10 +27,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/pajakter/{id}/editptkp/{ptkp_id}', [AdminController::class, 'editPtkp']);
     Route::post('/admin/pajakter/{id}/editptkp/{ptkp_id}', [AdminController::class, 'updatePtkp']);
     Route::get('/admin/bpjs/{id}', [AdminController::class, 'bpjs']);
+    Route::get('/admin/pajakter/{id}/hapus/{skpd_id}/pppk', [AdminController::class, 'hapusPPPK']);
+
     Route::get('/admin/tariktpp/{id}/{bulan}/{tahun}/{skpd_id}', [AdminController::class, 'tariktpp']);
 
     Route::get('/admin/pajakter/{id}/exportpajak/{skpd_id}', [PajakController::class, 'exportPajakSKPD']);
     Route::get('/admin/pajakter/{id}/exportbpjs/{skpd_id}', [PajakController::class, 'exportBpjsSKPD']);
+
+
 
     Route::get('/admin/pajakter/{id}/exportpajak/{skpd_id}/pppk', [PajakController::class, 'exportPajakSKPDPPPK']);
     Route::get('/admin/pajakter/{id}/exportbpjs/{skpd_id}/pppk', [PajakController::class, 'exportBpjsSKPDPPPK']);
