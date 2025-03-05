@@ -36,7 +36,7 @@
                             <th style="border: 1px solid rgb(19, 19, 19);vertical-align:middle" rowspan="2">Nama</th>
                             <th style="border: 1px solid rgb(19, 19, 19);vertical-align:middle" rowspan="2">PTKP
                             </th>
-                            <th style="border: 1px solid rgb(19, 19, 19)" colspan="3">Penghasilan</th>
+                            <th style="border: 1px solid rgb(19, 19, 19)" colspan="4">Penghasilan</th>
                             <th style="border: 1px solid rgb(19, 19, 19)" colspan="2">TER</th>
                             <th style="border: 1px solid rgb(19, 19, 19)" rowspan="2">PPh 21 Penghasilan</th>
                             <th style="border: 1px solid rgb(19, 19, 19)" rowspan="2">PPh 21 Gaji</th>
@@ -50,6 +50,7 @@
                                     <i class="fa fa-recycle"></i>
                                 </a>
                             </th>
+                            <th style="border: 1px solid rgb(19, 19, 19)">Tukin PLT</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Total</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Kelompok</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Tarif</th>
@@ -88,6 +89,9 @@
                                 {{number_format($item->gaji)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->tpp)}}</td>
+
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->tpp_plt)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->total_penghasilan)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
@@ -116,6 +120,8 @@
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->tpp)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->tpp_plt)}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->total_penghasilan)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
                                 {{$item->kelompok}}</td>
@@ -142,6 +148,8 @@
                                 {{number_format($item->gaji)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->tpp)}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
+                                {{number_format($item->tpp_plt)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->total_penghasilan)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">

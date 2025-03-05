@@ -56,7 +56,7 @@ class Pajak extends Model
     }
     public function getTotalPenghasilanAttribute()
     {
-        return $this->gaji + $this->tpp;
+        return $this->gaji + $this->tpp + $this->tpp_plt;
     }
     public function getKelompokAttribute()
     {

@@ -56,12 +56,12 @@
                             <th style="border: 1px solid rgb(19, 19, 19)">TJ Jabatan</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">TJ Fungsional</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">TJ Fungsional Umum</th>
-                            <th style="border: 1px solid rgb(19, 19, 19)">Tukin &nbsp; &nbsp;
+                            <th style="border: 1px solid rgb(19, 19, 19)">TPP &nbsp; &nbsp;
                                 {{-- <a href="/progress" class="btn btn-xs btn-default">
                                     <i class="fa fa-recycle"></i>
                                 </a> --}}
                             </th>
-                            <th style="border: 1px solid rgb(19, 19, 19)">TPP</th>
+                            <th style="border: 1px solid rgb(19, 19, 19)">Tukin PLT</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Sertifikasi</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Jaspel</th>
                             <th
@@ -109,7 +109,7 @@
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
                                 {{number_format($item->pagu)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
-                                {{number_format(0)}}</td>
+                                {{number_format($item->tpp_plt)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
                                 {{number_format(0)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
