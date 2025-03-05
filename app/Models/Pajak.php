@@ -42,7 +42,7 @@ class Pajak extends Model
     }
     public function getTppSatuPersenAttribute()
     {
-        return $this->iuran_satu_persen - $this->gaji_satu_persen;
+        return round($this->iuran_satu_persen) - round($this->gaji_satu_persen);
     }
     public function getTppEmpatPersenAttribute()
     {

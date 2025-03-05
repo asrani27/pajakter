@@ -133,7 +133,7 @@
                                 {{number_format($item->gaji_empat_persen)}}</td>
                             <td
                                 style="border: 1px solid rgb(19, 19, 19); text-align:right;background-color:rgb(189, 234, 248);">
-                                {{number_format($item->tpp_satu_persen)}}</td>
+                                {{number_format($item->tpp_satu_persen)}}..</td>
                             <td
                                 style="border: 1px solid rgb(19, 19, 19); text-align:right;background-color:rgb(254, 245, 173);">
                                 {{number_format($item->tpp_empat_persen)}}</td>
