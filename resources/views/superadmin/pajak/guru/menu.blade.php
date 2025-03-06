@@ -4,7 +4,7 @@
     <a href="/admin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guru"
         class="btn btn-flat {{request()->is('admin/pajakter/'.$id.'/skpd/'.$skpd_id.'/guru') ? 'btn-primary':'btn-outline-primary'}}">PENGAWAS
         & GURU
-        T</a>
+        TK</a>
     <a href="/admin/pajakter/{{$id}}/skpd/{{$skpd_id}}/gurusd"
         class="btn btn-flat {{request()->is('admin/pajakter/'.$id.'/skpd/'.$skpd_id.'/gurusd') ? 'btn-primary':'btn-outline-primary'}}">GURU
         SD</a>

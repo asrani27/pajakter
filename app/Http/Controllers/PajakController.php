@@ -59,6 +59,7 @@ class PajakController extends Controller
 
     public function uploadTPPGuru(Request $req, $id)
     {
+
         $validator = Validator::make($req->all(), [
             'file' => 'required|mimes:xlsx,xls,csv|max:2048',
         ]);
@@ -67,6 +68,7 @@ class PajakController extends Controller
             Session::flash('error', 'Validasi gagal! Pastikan file yang diunggah sesuai format.');
             return redirect()->back();
         }
+
 
         try {
 
@@ -254,7 +256,7 @@ class PajakController extends Controller
 
 
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get();
-        
+
         if ($data->isEmpty()) {
             Session::flash('info', 'Tidak ada data pajak yang ditemukan');
             return back();

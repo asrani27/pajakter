@@ -3,9 +3,7 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <a href="/superadmin/pajakter/{{$id}}/skpd" class="btn btn-default"><i class="fa fa-arrow-left"></i>
-            Kembali
-        </a>
+
         @include('superadmin.pajak.guru.format')
         <br /><br />
         <div class="card">
@@ -19,27 +17,37 @@
                         PERIODE : KINERJA {{strtoupper($bulanTahun->bulan)}} {{$bulanTahun->tahun}}
                     </strong>
                 </div>
-                <form method="post" action="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guru"
+
+                @if (Auth::user()->skpd_id == 1)
+                <form method="post" action="/admin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guru"
                     enctype="multipart/form-data">
                     @csrf
-                    @if (Auth::user()->skpd_id == 1)
-                    <a href="/admin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}/sheet/4" class="btn btn-sm btn-primary">
-                        <i class="fa fa-file-excel"></i> Export Pajak</a>
-                    @else
                     <input type="file" name="file" required>
                     <button type="submit" class="btn btn-sm btn-info" name="button" value="sheet4">
                         <i class="fa fa-upload"></i> UPLOAD GAJI</button>
 
-                    <a href="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guruteknis/reset"
-                        class="btn btn-sm btn-danger" onclick="return confirm('Yakin Di Hapus?');">
+                    <a href="/admin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guruteknis/reset" class="btn btn-sm btn-danger"
+                        onclick="return confirm('Yakin Di Hapus?');">
                         <i class="fa fa-times"></i> CLEAR DATA</a>
-                    <a href="/superadmin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}/sheet/4"
-                        class="btn btn-sm btn-primary">
+                    <a href="/admin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}/sheet/4" class="btn btn-sm btn-primary">
                         <i class="fa fa-file-excel"></i> Export Pajak</a>
-                    @endif
-
+                </form>
+                @else
+                <form method="post" action="/superadmin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guru"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="file" required>
+                    <button type="submit" class="btn btn-sm btn-info" name="button" value="sheet3">
+                        <i class="fa fa-upload"></i> UPLOAD GAJ
+                        <a href="/admin/pajakter/{{$id}}/skpd/{{$skpd_id}}/guruteknis/reset"
+                            class="btn btn-sm btn-danger" onclick="return confirm('Yakin Di Hapus?');">
+                            <i class="fa fa-times"></i> CLEAR DATA</a>
+                        <a href="/admin/pajakter/{{$id}}/exportpajak/{{$skpd_id}}/sheet/4"
+                            class="btn btn-sm btn-primary">
+                            <i class="fa fa-file-excel"></i> Export Pajak</a></button>
 
                 </form>
+                @endif
                 <br />
                 <table class="table table-hover text-nowrap table-sm">
                     <thead style="background-color:#3d8b99;">
