@@ -167,7 +167,7 @@
 
                         @endforeach
                         <tr style="background-color:#3d8b99;" class="text-white text-bold">
-                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;" colspan="9">TOTAL</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:right;" colspan="10">TOTAL</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($data->sum('pph_penghasilan'))}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
