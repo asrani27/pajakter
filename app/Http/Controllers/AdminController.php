@@ -114,13 +114,25 @@ class AdminController extends Controller
             Session::flash('error', 'Bulan tidak valid');
             return back();
         }
+        $rekapDataPlt = DB::connection('tpp')
+            ->table('rekap_plt')
+            ->where('skpd_id', $skpd_id)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->where('jenis_plt', 1)
+            ->pluck('jumlah_pembayaran', 'nip');
 
-        $rekapData = DB::connection('tpp')
+        $rekapDataReguler = DB::connection('tpp')
             ->table('rekap_reguler')
             ->where('skpd_id', $skpd_id)
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
+        $rekapData = collect($rekapDataReguler)
+            ->union($rekapDataPlt)
+            ->map(function ($jumlah, $nip) use ($rekapDataPlt) {
+                return $jumlah + ($rekapDataPlt[$nip] ?? 0);
+            });
 
         // Ambil pagu juga
         $nilaiTppData = DB::connection('tpp')
@@ -146,6 +158,7 @@ class AdminController extends Controller
 
         //dd($missingNips, $arrayString);
         // Jika ada NIP yang tidak ditemukan, tambahkan ke tabel Pajak
+
         foreach ($missingNips as $missingNip) {
             Pajak::create([
                 'bulan_tahun_id' => $id,
@@ -205,8 +218,6 @@ class AdminController extends Controller
 
         // Update data pajak
         $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData, $rekapDataPlt, $rekapPaguPlt) {
-
-
             $item->bpjs_satu_persen = $item->tpp_satu_persen;
             $item->bpjs_empat_persen = $item->tpp_empat_persen;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
