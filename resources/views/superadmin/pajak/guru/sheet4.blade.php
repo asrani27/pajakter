@@ -6,7 +6,7 @@
         <a href="/superadmin/pajakter/{{$id}}/skpd" class="btn btn-default"><i class="fa fa-arrow-left"></i>
             Kembali
         </a>
-
+        @include('superadmin.pajak.guru.format')
         <br /><br />
         <div class="card">
             <div class="card-header">
