@@ -36,16 +36,16 @@ class GajiPppkImport implements ToModel, WithStartRow
             // Update jumlah_tanggungan jika data sudah ada
             Pajak::where('id', $pajakId)
                 ->update([
-                    'status_kawin' => $row[2],
-                    'jumlah_tanggungan' => $row[3],
-                    'gapok' => $row[4],
-                    'tjk' => $row[5],
-                    'tjb' => $row[6],
-                    'tjf' => $row[7],
-                    'tjfu' => $row[8],
-                    'pph_gaji' => $row[9],
-                    'gaji' => $row[10],
-                    'unit_kerja' => $row[11],
+                    'status_kawin' => $row[4],
+                    'jumlah_tanggungan' => $row[5],
+                    'gapok' => $row[6],
+                    'tjk' => $row[7],
+                    'tjb' => $row[8],
+                    'tjf' => $row[9],
+                    'tjfu' => $row[10],
+                    'pph_gaji' => $row[11],
+                    'gaji' => $row[12],
+                    'unit_kerja' => $row[13] == null ? null : $row[13],
                     'status_pegawai' => 'PPPK'
                 ]);
         } else {
@@ -53,16 +53,16 @@ class GajiPppkImport implements ToModel, WithStartRow
                 'bulan_tahun_id' => $this->bulan_tahun_id,
                 'nip' => $row[0],
                 'nama' => $row[1],
-                'status_kawin' => $row[2],
-                'jumlah_tanggungan' => $row[3],
-                'gapok' => $row[4],
-                'tjk' => $row[5],
-                'tjb' => $row[6],
-                'tjf' => $row[7],
-                'tjfu' => $row[8],
-                'pph_gaji' => $row[9],
-                'gaji' => $row[10],
-                'unit_kerja' => $row[11],
+                'status_kawin' => $row[4],
+                'jumlah_tanggungan' => $row[5],
+                'gapok' => $row[6],
+                'tjk' => $row[7],
+                'tjb' => $row[8],
+                'tjf' => $row[9],
+                'tjfu' => $row[10],
+                'pph_gaji' => $row[11],
+                'gaji' => $row[12],
+                'unit_kerja' => $row[13] == null ? null : $row[13],
                 'status_pegawai' => 'PPPK'
             ]);
         }

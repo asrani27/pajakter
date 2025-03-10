@@ -37,22 +37,22 @@ class GajiBpjsImport implements ToModel, WithStartRow
             // Update jumlah_tanggungan jika data sudah ada
             Pajak::where('id', $pajakId)
                 ->update([
-                    'gapok' => $row[4],
-                    'tjk' => $row[5],
-                    'tjb' => $row[6],
-                    'tjf' => $row[7],
-                    'tjfu' => $row[8]
+                    'gapok' => $row[6],
+                    'tjk' => $row[7],
+                    'tjb' => $row[8],
+                    'tjf' => $row[9],
+                    'tjfu' => $row[10]
                 ]);
         } else {
             return new Pajak([
                 'bulan_tahun_id' => $this->bulan_tahun_id,
                 'nip' => $row[0],
                 'nama' => $row[1],
-                'gapok' => $row[4],
-                'tjk' => $row[5],
-                'tjb' => $row[6],
-                'tjf' => $row[7],
-                'tjfu' => $row[8]
+                'gapok' => $row[6],
+                'tjk' => $row[7],
+                'tjb' => $row[8],
+                'tjf' => $row[9],
+                'tjfu' => $row[10]
             ]);
         }
     }

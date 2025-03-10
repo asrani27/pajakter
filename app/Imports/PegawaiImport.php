@@ -28,15 +28,15 @@ class PegawaiImport implements ToModel, WithStartRow
             'skpd_id' => $this->skpd_id,
             'nip' => $row[0],
             'nama' => $row[1],
-            'status_kawin' => $row[2],
+            'status_kawin' => $row[4],
             'jumlah_tanggungan' => $row[5],
-            'pph_gaji' => $row[11],
-            'gaji' => $row[12],
             'gapok' => $row[6],
             'tjk' => $row[7],
             'tjb' => $row[8],
             'tjf' => $row[9],
             'tjfu' => $row[10],
+            'pph_gaji' => $row[11],
+            'gaji' => $row[12],
         ]);
     }
     public function startRow(): int
