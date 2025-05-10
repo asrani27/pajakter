@@ -121,18 +121,37 @@ class AdminController extends Controller
             ->where('tahun', $tahun)
             ->where('jenis_plt', 1)
             ->pluck('jumlah_pembayaran', 'nip');
-
         $rekapDataReguler = DB::connection('tpp')
             ->table('rekap_reguler')
             ->where('skpd_id', $skpd_id)
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
-        $rekapData = collect($rekapDataReguler)
+
+        $rekapDataCpns = DB::connection('tpp')
+            ->table('rekap_cpns')
+            ->where('skpd_id', $skpd_id)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('jumlah_pembayaran', 'nip');
+
+        $allNips = collect($rekapDataReguler->keys())
+            ->merge($rekapDataCpns->keys())
+            ->unique();
+
+        $rekapGabungan = $allNips->mapWithKeys(function ($nip) use ($rekapDataReguler, $rekapDataCpns) {
+            $reguler = $rekapDataReguler[$nip] ?? 0;
+            $cpns = $rekapDataCpns[$nip] ?? 0;
+            return [$nip => $reguler + $cpns];
+        });
+
+
+        $rekapData = collect($rekapGabungan)
             ->union($rekapDataPlt)
             ->map(function ($jumlah, $nip) use ($rekapDataPlt) {
                 return $jumlah + ($rekapDataPlt[$nip] ?? 0);
             });
+
 
         // Ambil pagu juga
         $nilaiTppData = DB::connection('tpp')
@@ -176,7 +195,7 @@ class AdminController extends Controller
 
 
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get();
-
+        //dd($data);
         if ($data->isEmpty()) {
             Session::flash('info', 'Tidak ada data pajak yang ditemukan');
             return back();
@@ -184,7 +203,7 @@ class AdminController extends Controller
 
         // Ambil semua NIP dari data pajak
         $nips = $data->pluck('nip')->toArray();
-
+        //dd($nips);
         $rekapPaguPlt = DB::connection('tpp')
             ->table('rekap_plt')
             ->where('skpd_id', $skpd_id)
@@ -200,21 +219,63 @@ class AdminController extends Controller
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
 
-        // Ambil data rekap reguler dalam satu query
-        $rekapData = DB::connection('tpp')
+        // Ambil data rekap reguler dan CPNS dalam satu query
+        $rekapDataCpns = DB::connection('tpp')
+            ->table('rekap_cpns')
+            ->whereIn('nip', $nips)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('jumlah_pembayaran', 'nip');
+        $rekapDataReguler = DB::connection('tpp')
             ->table('rekap_reguler')
             ->whereIn('nip', $nips)
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip'); // Hasilkan array [nip => jumlah_pembayaran]
         // Ambil pagu
-        $nilaiTppData = DB::connection('tpp')
+        $nilaiTppCpns = DB::connection('tpp')
+            ->table('rekap_cpns')
+            ->whereIn('nip', $nips)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('pagu', 'nip');
+        $nilaiTppReguler = DB::connection('tpp')
             ->table('rekap_reguler')
             ->whereIn('nip', $nips)
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('pagu', 'nip');
 
+        $rd = collect($rekapDataReguler->keys())
+            ->merge($rekapDataCpns->keys())
+            ->unique();
+
+        $rekapData = $rd->mapWithKeys(function ($nip) use ($rekapDataReguler, $rekapDataCpns) {
+            $reguler = $rekapDataReguler[$nip] ?? 0;
+            $cpns = $rekapDataCpns[$nip] ?? 0;
+            return [$nip => $reguler + $cpns];
+        });
+        $nd = collect($nilaiTppReguler->keys())
+            ->merge($nilaiTppCpns->keys())
+            ->unique();
+
+        $nilaiTppData = $nd->mapWithKeys(function ($nip) use ($nilaiTppReguler, $nilaiTppCpns) {
+            $reguler = $nilaiTppReguler[$nip] ?? 0;
+            $cpns = $nilaiTppCpns[$nip] ?? 0;
+            return [$nip => $reguler + $cpns];
+        });
+
+        // $rekapDataCpns = DB::connection('tpp')
+        //     ->table('rekap_cpns')
+        //     ->where('skpd_id', $skpd_id)
+        //     ->where('bulan', $no)
+        //     ->where('tahun', $tahun)
+        //     ->pluck('jumlah_pembayaran', 'nip');
+
+        // $data->map(function ($item) use ($rekapDataCpns) {
+        //     $item->status = $rekapDataCpns[$item->nip] ?? 0;
+        //     return $item;
+        // });
 
         // Update data pajak
         $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData, $rekapDataPlt, $rekapPaguPlt) {

@@ -265,6 +265,13 @@ class PajakController extends Controller
         // Ambil semua NIP dari data pajak
         $nips = $data->pluck('nip')->toArray();
 
+        $rekapDataCpns = DB::connection('tpp')
+            ->table('rekap_cpns')
+            ->where('skpd_id', $skpd_id)
+            ->where('bulan', $no)
+            ->where('tahun', $tahun)
+            ->pluck('jumlah_pembayaran', 'nip');
+            
         $rekapDataPlt = DB::connection('tpp')
             ->table('rekap_plt')
             ->where('skpd_id', $skpd_id)
