@@ -30,7 +30,7 @@ class TppPppkDinkes implements ToModel, WithStartRow
     public function model(array $row)
     {
 
-        $nip =  (string) trim($row[1]);
+        $nip =  (string) str_replace(' ', '', $row[1]);
 
         if (in_array($nip, $this->existingNips)) {
 
@@ -46,9 +46,9 @@ class TppPppkDinkes implements ToModel, WithStartRow
                     'status_pegawai' => 'PPPK',
                 ]);
 
-            Log::channel('importtpp')->info("NIP $nip ditemukan pada existingNips dengan ID Pajak: $pajakId");
+            //Log::channel('importtpp')->info("NIP $nip ditemukan pada existingNips dengan ID Pajak: $pajakId");
         } else {
-            // Log::channel('importtpp')->warning("NIP $nip tidak ditemukan pada existingNips");
+            Log::channel('importtpp')->warning("NIP $nip tidak ditemukan pada existingNips");
             // $new = new Pajak();
             // $new->nip = $nip;
             // $new->bulan_tahun_id = $this->bulan_tahun_id;

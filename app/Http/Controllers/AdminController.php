@@ -469,39 +469,6 @@ class AdminController extends Controller
     {
         $remove = Pajak::where('bulan_tahun_id', $id)->where('status_pegawai', 'PPPK')->where('skpd_id', Auth::user()->skpd->id)->update(['skpd_id' => NULL]);
         $data = Excel::import(new TppPppkDinkes($id), $req->file('file'));
-
-        // Array untuk menampung data yang tidak ada di database
-        //$filteredRecords = [];
-
-        // Proses pengecekan data di tabel Pajak
-        // foreach ($data as &$row) {
-        //     $nip = $row[1]; // Ambil NIK (kolom kedua)
-
-        //     // Cek apakah NIK ada di tabel Pajak
-        //     $exists = Pajak::where('nip', $nip)->where('bulan_tahun_id', $id)->exists();
-        //     if (!$exists) {
-        //         // Tambahkan status "tidak ada" dan masukkan ke dalam hasil filter
-        //         $row[4] = 'tidak ada';
-        //         $filteredRecords[] = $row;
-        //     }
-        //     // Tambahkan status ke array
-        //     $row[4] = $exists ? 'ada' : 'tidak ada';
-        // }
-        //199606032024212030
-        //dd($data[77]);
-        // foreach ($filteredRecords as $tidakada) {
-        //     //simpan pajak yang tidak ada data gaji
-        //     $new = new Pajak();
-        //     $new->skpd_id = 34;
-        //     $new->nip = $tidakada[1];
-        //     $new->nama = $tidakada[2];
-        //     $new->tpp = $tidakada[3];
-        //     $new->pagu = $tidakada[3];
-        //     $new->status_pegawai = 'PPPK';
-        //     $new->bulan_tahun_id = $id;
-        //     $new->save();
-        // }
-
         Session::flash('success', 'Data TPP PPPK berhasil diupload');
         return redirect()->back();
     }
