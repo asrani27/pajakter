@@ -183,8 +183,7 @@ class AdminController extends Controller
                 'bulan_tahun_id' => $id,
                 'nip' => $missingNip,
                 'nama' => DB::connection('tpp')
-                    ->table('rekap_reguler')->where('nip', $missingNip)->first() == null ? DB::connection('tpp')
-                    ->table('rekap_reguler')->where('nip', $missingNip)->first()->nama,
+                    ->table('rekap_reguler')->where('nip', $missingNip)->first() == null ? null : DB::connection('tpp')->table('rekap_reguler')->where('nip', $missingNip)->first()->nama,
                 'skpd_id' => $skpd_id,
                 'jumlah_pembayaran' => $rekapData[$missingNip] ?? 0, // Default nilai jika tidak ada di $rekapData
                 'pagu' => $nilaiTppData[$missingNip] ?? 0, // Menambahkan pagu
