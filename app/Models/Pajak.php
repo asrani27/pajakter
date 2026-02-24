@@ -38,7 +38,7 @@ class Pajak extends Model
     }
     public function getGajiEmpatPersenAttribute()
     {
-        return $this->gaji_satu_persen * 4;
+        return round($this->gaji_satu_persen) * 4;
     }
     public function getTppSatuPersenAttribute()
     {
