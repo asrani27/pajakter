@@ -26,7 +26,7 @@ class Pajak extends Model
     public function getIuranSatuPersenAttribute()
     {
         $nilai = $this->jumlah_penghasilan ?? 0; // Ganti 'nilai' dengan kolom yang relevan di database
-        return $nilai >= 12000000 ? 120000 : $nilai * 0.01;
+        return round($nilai >= 12000000 ? 120000 : $nilai * 0.01);
     }
     public function getIuranEmpatPersenAttribute()
     {
