@@ -707,6 +707,7 @@ class PajakController extends Controller
             $sheet->setCellValue('R' . $row, $bpj->gaji_satu_persen);
             $sheet->setCellValue('S' . $row, $bpj->gaji_satu_persen * 4);
             $sheet->setCellValue('T' . $row, $bpj->tpp_satu_persen);
+            dd($bpj->gaji_satu_persen);
             $sheet->setCellValue('U' . $row, $bpj->tpp_satu_persen * 4);
             // $sheet->setCellValue('F' . $row, $pajak->tpp);
             // $sheet->setCellValue('G' . $row, $pajak->total_penghasilan);
