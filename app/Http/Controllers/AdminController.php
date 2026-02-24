@@ -280,7 +280,7 @@ class AdminController extends Controller
         // Update data pajak
         $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData, $rekapDataPlt, $rekapPaguPlt) {
             $item->bpjs_satu_persen = $item->tpp_satu_persen;
-            $item->bpjs_empat_persen = $item->tpp_empat_persen;
+            $item->bpjs_empat_persen = $item->tpp_satu_persen * 4;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
             $item->tpp_plt = $rekapDataPlt[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
 
@@ -469,6 +469,7 @@ class AdminController extends Controller
     {
         $remove = Pajak::where('bulan_tahun_id', $id)->where('status_pegawai', 'PPPK')->where('skpd_id', Auth::user()->skpd->id)->update(['skpd_id' => NULL]);
         $data = Excel::import(new TppPppkDinkes($id), $req->file('file'));
+
         Session::flash('success', 'Data TPP PPPK berhasil diupload');
         return redirect()->back();
     }

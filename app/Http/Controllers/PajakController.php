@@ -271,7 +271,7 @@ class PajakController extends Controller
             ->where('bulan', $no)
             ->where('tahun', $tahun)
             ->pluck('jumlah_pembayaran', 'nip');
-            
+
         $rekapDataPlt = DB::connection('tpp')
             ->table('rekap_plt')
             ->where('skpd_id', $skpd_id)
@@ -298,7 +298,7 @@ class PajakController extends Controller
         $updatedData = $data->map(function ($item) use ($rekapData, $nilaiTppData, $rekapDataPlt) {
 
             $item->bpjs_satu_persen = $item->tpp_satu_persen;
-            $item->bpjs_empat_persen = $item->tpp_empat_persen;
+            $item->bpjs_empat_persen = $item->tpp_satu_persen * 4;
             $item->tpp = $rekapData[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
             $item->tpp_plt = $rekapDataPlt[$item->nip] ?? 0; // Default ke 0 jika tidak ditemukan
             $item->pagu = $nilaiTppData[$item->nip] ?? 0;
@@ -315,7 +315,7 @@ class PajakController extends Controller
                 $item['created_at'] = now()->format('Y-m-d H:i:s'); // Format datetime
                 $item['updated_at'] = now()->format('Y-m-d H:i:s');
                 $item['bpjs_satu_persen'] = $item['bpjs_satu_persen'];
-                $item['bpjs_empat_persen'] = $item['bpjs_empat_persen'];
+                $item['bpjs_empat_persen'] = $item['bpjs_satu_persen'] * 4;
                 $item['pagu'] = $item['pagu'];
                 return $item;
             })->toArray(),
@@ -703,11 +703,11 @@ class PajakController extends Controller
             $sheet->setCellValue('N' . $row, $bpj->jumlah_tunjangan);
             $sheet->setCellValue('O' . $row, $bpj->jumlah_penghasilan);
             $sheet->setCellValue('P' . $row, $bpj->iuran_satu_persen);
-            $sheet->setCellValue('Q' . $row, $bpj->iuran_empat_persen);
+            $sheet->setCellValue('Q' . $row, $bpj->iuran_satu_persen * 4);
             $sheet->setCellValue('R' . $row, $bpj->gaji_satu_persen);
-            $sheet->setCellValue('S' . $row, $bpj->gaji_empat_persen);
+            $sheet->setCellValue('S' . $row, $bpj->gaji_satu_persen * 4);
             $sheet->setCellValue('T' . $row, $bpj->tpp_satu_persen);
-            $sheet->setCellValue('U' . $row, $bpj->tpp_empat_persen);
+            $sheet->setCellValue('U' . $row, $bpj->tpp_satu_persen * 4);
             // $sheet->setCellValue('F' . $row, $pajak->tpp);
             // $sheet->setCellValue('G' . $row, $pajak->total_penghasilan);
             // $sheet->setCellValue('H' . $row, $pajak->kelompok);
@@ -946,11 +946,11 @@ class PajakController extends Controller
             $sheet->setCellValue('N' . $row, $bpj->jumlah_tunjangan);
             $sheet->setCellValue('O' . $row, $bpj->jumlah_penghasilan);
             $sheet->setCellValue('P' . $row, $bpj->iuran_satu_persen);
-            $sheet->setCellValue('Q' . $row, $bpj->iuran_empat_persen);
+            $sheet->setCellValue('Q' . $row, $bpj->iuran_satu_persen * 4);
             $sheet->setCellValue('R' . $row, $bpj->gaji_satu_persen);
-            $sheet->setCellValue('S' . $row, $bpj->gaji_empat_persen);
+            $sheet->setCellValue('S' . $row, $bpj->gaji_satu_persen * 4);
             $sheet->setCellValue('T' . $row, $bpj->tpp_satu_persen);
-            $sheet->setCellValue('U' . $row, $bpj->tpp_empat_persen);
+            $sheet->setCellValue('U' . $row, $bpj->tpp_satu_persen  * 4);
             // $sheet->setCellValue('F' . $row, $pajak->tpp);
             // $sheet->setCellValue('G' . $row, $pajak->total_penghasilan);
             // $sheet->setCellValue('H' . $row, $pajak->kelompok);
@@ -1205,11 +1205,11 @@ class PajakController extends Controller
             $sheet->setCellValue('N' . $row, $bpj->jumlah_tunjangan);
             $sheet->setCellValue('O' . $row, $bpj->jumlah_penghasilan);
             $sheet->setCellValue('P' . $row, $bpj->iuran_satu_persen);
-            $sheet->setCellValue('Q' . $row, $bpj->iuran_empat_persen);
+            $sheet->setCellValue('Q' . $row, $bpj->iuran_satu_persen * 4);
             $sheet->setCellValue('R' . $row, $bpj->gaji_satu_persen);
-            $sheet->setCellValue('S' . $row, $bpj->gaji_empat_persen);
+            $sheet->setCellValue('S' . $row, $bpj->gaji_satu_persen * 4);
             $sheet->setCellValue('T' . $row, $bpj->tpp_satu_persen);
-            $sheet->setCellValue('U' . $row, $bpj->tpp_empat_persen);
+            $sheet->setCellValue('U' . $row, $bpj->tpp_satu_persen * 4);
             // $sheet->setCellValue('F' . $row, $pajak->tpp);
             // $sheet->setCellValue('G' . $row, $pajak->total_penghasilan);
             // $sheet->setCellValue('H' . $row, $pajak->kelompok);
