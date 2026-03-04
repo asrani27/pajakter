@@ -14,6 +14,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PajakController;
 use App\Http\Controllers\RFKController;
 use App\Http\Controllers\SkpdController;
+use App\Http\Controllers\PtkpController;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::get('/login', [LoginController::class, 'index']);
@@ -73,6 +74,17 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/user/delete/{id}', [UserController::class, 'delete']);
 
     Route::get('/superadmin/skpd', [SkpdController::class, 'index']);
+
+    Route::get('/superadmin/ptkp', [PtkpController::class, 'index']);
+    Route::get('/superadmin/ptkp/search', [PtkpController::class, 'search']);
+    Route::post('/superadmin/ptkp/import', [PtkpController::class, 'import']);
+    Route::get('/superadmin/ptkp/create', [PtkpController::class, 'create']);
+    Route::post('/superadmin/ptkp/create', [PtkpController::class, 'store']);
+    Route::get('/superadmin/ptkp/edit/{id}', [PtkpController::class, 'edit']);
+    Route::post('/superadmin/ptkp/edit/{id}', [PtkpController::class, 'update']);
+    Route::get('/superadmin/ptkp/delete/{id}', [PtkpController::class, 'delete']);
+
+    Route::get('/superadmin/pajakter/{id}/updateptkp', [PajakController::class, 'updatePtkp']);
     Route::get('/superadmin/pajakter/{id}/pppk-pajak', [PajakController::class, 'showPppkPajak']);
     Route::get('/superadmin/pajakter/{id}/pppk-bpjs', [PajakController::class, 'showPppkBpjs']);
     Route::get('/superadmin/pajakter/pppk/{id}/reset', [PajakController::class, 'resetPPPK']);

@@ -2,30 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Skpd;
-use App\Models\Pajak;
-use App\Models\BulanTahun;
-use Illuminate\Http\Request;
+use App\Imports\GajiBpjsImport;
+use App\Imports\GajiPppkImport;
 use App\Imports\GajiTppImport;
 use App\Imports\PegawaiImport;
 use App\Imports\TppGuruImport;
-use App\Imports\GajiBpjsImport;
-use App\Imports\GajiPppkImport;
 use App\Imports\TppGuruSDImport;
 use App\Imports\TppGuruSMPImport;
-use Illuminate\Support\Facades\DB;
 use App\Imports\TppGuruTeknisImport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Models\BulanTahun;
+use App\Models\Pajak;
+use App\Models\Ptkp;
+use App\Models\Skpd;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Validator;
-use PhpOffice\PhpSpreadsheet\Style\Color;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PajakController extends Controller
 {
+    public function updatePtkp($id)
+    {
+        $data = Pajak::where('bulan_tahun_id', $id)->get();
+        $data->map(function ($item) {
+            $item->status_ptkp = Ptkp::where('nip', $item->nip)->first() == null ? null : Ptkp::where('nip', $item->nip)->first()->ptkp;
+            $item->save();
+        });
+        return back();
+    }
     public function index()
     {
         $data = BulanTahun::orderBy('id', 'DESC')->get();

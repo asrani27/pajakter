@@ -48,19 +48,19 @@ class Pajak extends Model
     {
         return $this->tpp_satu_persen * 4;
     }
-    public function getPTKPAttribute()
-    {
-        $statusKawin = $this->status_kawin == 1 ? 'K' : 'TK';
-        $jumlahTanggungan = $this->jumlah_tanggungan;
-        return $statusKawin . '/' . $jumlahTanggungan;
-    }
+    // public function getPTKPAttribute()
+    // {
+    //     $statusKawin = $this->status_kawin == 1 ? 'K' : 'TK';
+    //     $jumlahTanggungan = $this->jumlah_tanggungan;
+    //     return $statusKawin . '/' . $jumlahTanggungan;
+    // }
     public function getTotalPenghasilanAttribute()
     {
         return $this->gaji + $this->tpp + $this->tpp_plt;
     }
     public function getKelompokAttribute()
     {
-        $ptkp = $this->PTKP;  // Mengambil nilai PTKP, seperti K/2 atau TK/1
+        $ptkp = $this->status_ptkp;  // Mengambil nilai PTKP, seperti K/2 atau TK/1
 
         // Menentukan kelompok berdasarkan PTKP
         switch ($ptkp) {

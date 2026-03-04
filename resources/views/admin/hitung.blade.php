@@ -71,15 +71,19 @@
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">
                                 <form method="post" action="/admin/pajakter/{{$bulanTahun->id}}/editptkp/{{$item->id}}">
                                     @csrf
-                                    <select class="form-control-sm" name="ptkp">
-                                        <option value="K/0" {{$edit->ptkp == 'K/0' ? 'selected':''}}>K/0</option>
-                                        <option value="K/1" {{$edit->ptkp == 'K/1' ? 'selected':''}}>K/1</option>
-                                        <option value="K/2" {{$edit->ptkp == 'K/2' ? 'selected':''}}>K/2</option>
-                                        <option value="K/3" {{$edit->ptkp == 'K/3' ? 'selected':''}}>K/3</option>
-                                        <option value="TK/0" {{$edit->ptkp == 'TK/0' ? 'selected':''}}>TK/0</option>
-                                        <option value="TK/1" {{$edit->ptkp == 'TK/1' ? 'selected':''}}>TK/1</option>
-                                        <option value="TK/2" {{$edit->ptkp == 'TK/2' ? 'selected':''}}>TK/2</option>
-                                        <option value="TK/3" {{$edit->ptkp == 'TK/3' ? 'selected':''}}>TK/3</option>
+                                    <select class="form-control-sm" name="status_ptkp">
+                                        <option value="K/0" {{$edit->status_ptkp == 'K/0' ? 'selected':''}}>K/0</option>
+                                        <option value="K/1" {{$edit->status_ptkp == 'K/1' ? 'selected':''}}>K/1</option>
+                                        <option value="K/2" {{$edit->status_ptkp == 'K/2' ? 'selected':''}}>K/2</option>
+                                        <option value="K/3" {{$edit->status_ptkp == 'K/3' ? 'selected':''}}>K/3</option>
+                                        <option value="TK/0" {{$edit->status_ptkp == 'TK/0' ? 'selected':''}}>TK/0
+                                        </option>
+                                        <option value="TK/1" {{$edit->status_ptkp == 'TK/1' ? 'selected':''}}>TK/1
+                                        </option>
+                                        <option value="TK/2" {{$edit->status_ptkp == 'TK/2' ? 'selected':''}}>TK/2
+                                        </option>
+                                        <option value="TK/3" {{$edit->status_ptkp == 'TK/3' ? 'selected':''}}>TK/3
+                                        </option>
                                     </select>
                                     <button type="submit" class="btn btn-xs btn-primary"><i class="fa fa-save"></i>
                                         update</button>
@@ -111,7 +115,7 @@
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$no++}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nip}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nama}}</td>
-                            <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">{{$item->ptkp}}
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">{{$item->status_ptkp}}
                                 <a href="/admin/pajakter/{{$bulanTahun->id}}/editptkp/{{$item->id}}"><i
                                         class="fa fa-edit"></i></a>
                             </td>
@@ -140,7 +144,7 @@
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$no++}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nip}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nama}}</td>
-                            <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">{{$item->ptkp}}
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">{{$item->status_ptkp}}
                                 <a href="/admin/pajakter/{{$bulanTahun->id}}/editptkp/{{$item->id}}"><i
                                         class="fa fa-edit"></i></a>
                             </td>

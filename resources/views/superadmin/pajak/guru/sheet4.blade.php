@@ -86,7 +86,8 @@
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$no++}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nip}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19);">{{$item->nama}}</td>
-                            <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">{{$item->ptkp}}</td>
+                            <td style="border: 1px solid rgb(19, 19, 19); text-align:center;">{{$item->status_ptkp}}
+                            </td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
                                 {{number_format($item->gaji)}}</td>
                             <td style="border: 1px solid rgb(19, 19, 19); text-align:right;">
