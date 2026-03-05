@@ -29,12 +29,25 @@ class PajakController extends Controller
 {
     public function updatePtkp($id)
     {
-        $data = Pajak::where('bulan_tahun_id', $id)->get();
-        $data->map(function ($item) {
-            $item->status_ptkp = Ptkp::where('nip', $item->nip)->first() == null ? null : Ptkp::where('nip', $item->nip)->first()->ptkp;
-            $item->save();
-        });
-        return back();
+        // Dispatch job to queue
+        \App\Jobs\UpdatePtkpJob::dispatch($id);
+        
+        return back()->with('success', 'Proses update PTKP telah dimulai. Silakan tunggu...');
+    }
+    
+    public function checkPtkpProgress($id)
+    {
+        $cacheKey = 'ptkp_update_progress_' . $id;
+        $progress = \Illuminate\Support\Facades\Cache::get($cacheKey);
+        
+        if (!$progress) {
+            return response()->json([
+                'status' => 'not_started',
+                'message' => 'Proses belum dimulai'
+            ]);
+        }
+        
+        return response()->json($progress);
     }
     public function index()
     {

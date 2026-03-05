@@ -85,6 +85,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/ptkp/delete/{id}', [PtkpController::class, 'delete']);
 
     Route::get('/superadmin/pajakter/{id}/updateptkp', [PajakController::class, 'updatePtkp']);
+    Route::get('/superadmin/pajakter/{id}/check-ptkp-progress', [PajakController::class, 'checkPtkpProgress']);
     Route::get('/superadmin/pajakter/{id}/pppk-pajak', [PajakController::class, 'showPppkPajak']);
     Route::get('/superadmin/pajakter/{id}/pppk-bpjs', [PajakController::class, 'showPppkBpjs']);
     Route::get('/superadmin/pajakter/pppk/{id}/reset', [PajakController::class, 'resetPPPK']);

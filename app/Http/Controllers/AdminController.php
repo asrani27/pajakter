@@ -35,31 +35,10 @@ class AdminController extends Controller
 
     public function updatePtkp(Request $req, $id, $ptkp_id)
     {
-        // Mapping PTKP ke status_kawin dan jumlah_tanggungan
-        $ptkpMap = [
-            'K/0' => [1, 0],
-            'K/1' => [1, 1],
-            'K/2' => [1, 2],
-            'K/3' => [1, 3],
-            'TK/0' => [2, 0],
-            'TK/1' => [2, 1],
-            'TK/2' => [2, 2],
-            'TK/3' => [2, 3],
-        ];
-
-        // Ambil status_kawin dan jumlah_tanggungan berdasarkan PTKP
-        [$status_kawin, $jumlah_tanggungan] = $ptkpMap[$req->ptkp] ?? [null, null];
-
-        // Validasi jika PTKP tidak ditemukan
-        if (is_null($status_kawin) || is_null($jumlah_tanggungan)) {
-            Session::flash('error', 'PTKP tidak valid');
-            return back();
-        }
 
         // Update data pada tabel Pajak
         Pajak::find($ptkp_id)->update([
-            'status_kawin' => $status_kawin,
-            'jumlah_tanggungan' => $jumlah_tanggungan,
+            'status_ptkp' => $req->status_ptkp,
         ]);
 
         Session::flash('success', 'PTKP berhasil diperbarui');
