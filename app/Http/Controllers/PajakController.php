@@ -31,7 +31,7 @@ class PajakController extends Controller
     {
         $data = Pajak::where('bulan_tahun_id', $id)->get();
         $data->map(function ($item) {
-            $item->status_ptkp = Ptkp::where('nip', $item->nip)->first()->status_ptkp ?? null;
+            $item->status_ptkp = Ptkp::where('nip', $item->nip)->first()->ptkp ?? null;
             $item->save();
         });
 
