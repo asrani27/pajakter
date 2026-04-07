@@ -48,7 +48,8 @@ class GajiTppImport implements ToModel, WithStartRow
                         'status_kawin' => $row[4],
                         'jumlah_tanggungan' => $row[5],
                         'pph_gaji' => $pph_gaji,
-                        'gaji' => $gaji
+                        'gaji' => $gaji,
+                        'status_pegawai' => null,
                     ]);
             } else {
                 return new Pajak([

@@ -174,7 +174,7 @@ class AdminController extends Controller
 
 
         $data = Pajak::where('bulan_tahun_id', $id)->where('skpd_id', $skpd_id)->where('status_pegawai', null)->get();
-        //dd($data);
+
         if ($data->isEmpty()) {
             Session::flash('info', 'Tidak ada data pajak yang ditemukan');
             return back();
