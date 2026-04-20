@@ -29,8 +29,18 @@ class PajakGabunganController extends Controller
         if ($request->skpd_id) {
             $query->where('skpd_id', $request->skpd_id);
         }
-        $data = $query->get()->select('id', 'nip', 'nama', 'pph_terutang')->sortByDesc('pph_terutang');
-        //$data = $query->select('id', 'nip', 'nama', 'pph_terutang')->get();
+        $data = $query->get();
+        $data = $data->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'nip' => $item->nip,
+                'nama' => $item->nama,
+                'pph_terutang' => $item->pph_terutang,
+                'pph_thr' => $item->pph_thr
+            ];
+        })->sortByDesc(function ($item) {
+            return $item['pph_terutang'] ?? 0;
+        })->values()->toArray();
 
         return response()->json([
             'success' => true,
