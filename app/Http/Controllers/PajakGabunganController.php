@@ -29,7 +29,7 @@ class PajakGabunganController extends Controller
         if ($request->skpd_id) {
             $query->where('skpd_id', $request->skpd_id);
         }
-        $data = $query->get()->select('id', 'nip', 'nama', 'pph_terutang')->sortByDesc('pagu');
+        $data = $query->get()->select('id', 'nip', 'nama', 'pph_terutang', 'pagu')->sortByDesc('pagu');
         //$data = $query->select('id', 'nip', 'nama', 'pph_terutang')->get();
 
         return response()->json([
