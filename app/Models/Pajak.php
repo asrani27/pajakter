@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 
 class Pajak extends Model
@@ -123,23 +124,28 @@ class Pajak extends Model
         // Menentukan tarif berdasarkan kelompok dan penghasilan
         $tarif = null;
 
-        // Cari tarif berdasarkan kelompok dan penghasilan
-        $tarifData = DB::table('tarif')
-            ->where('ter', $kelompok)  // Sesuaikan dengan kelompok
-            ->where('mulai', '<=', $penghasilan)  // Mulai tarif <= penghasilan
-            ->where(function ($query) use ($penghasilan) {
-                // Jika Sampai ada dan penghasilan <= Sampai, maka pilih tarif tersebut
-                $query->where('sampai', '>=', $penghasilan)
-                    ->orWhereNull('sampai');
-            })
-            ->orderBy('mulai', 'desc')  // Urutkan berdasarkan Mulai untuk memilih rentang yang tepat
-            ->first();
+        try {
+            // Cari tarif berdasarkan kelompok dan penghasilan
+            $tarifData = DB::table('tarif')
+                ->where('ter', $kelompok)  // Sesuaikan dengan kelompok
+                ->where('mulai', '<=', $penghasilan)  // Mulai tarif <= penghasilan
+                ->where(function ($query) use ($penghasilan) {
+                    // Jika Sampai ada dan penghasilan <= Sampai, maka pilih tarif tersebut
+                    $query->where('sampai', '>=', $penghasilan)
+                        ->orWhereNull('sampai');
+                })
+                ->orderBy('mulai', 'desc')  // Urutkan berdasarkan Mulai untuk memilih rentang yang tepat
+                ->first();
 
-        // Jika ada tarif yang ditemukan
-        if ($tarifData) {
-            $tarif = $tarifData->tarif;  // Ambil nilai tarif
+            // Jika ada tarif yang ditemukan
+            if ($tarifData) {
+                $tarif = $tarifData->tarif;  // Ambil nilai tarif
+            }
+        } catch (\Exception $e) {
+            // Log error jika diperlukan
+            Log::error('Error calculating PPH THR for ID ' . $this->id . ': ' . $e->getMessage());
         }
 
-        return round($penghasilan * $tarif / 100);
+        return round($penghasilan * ($tarif ?? 0) / 100);
     }
 }
