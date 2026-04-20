@@ -37,8 +37,8 @@
                                 </button>
                             </div>
                             <div class="col-md-6">
-                                <button type="button" class="btn btn-danger btn-block" onclick="exportPdf()">
-                                    <i class="fa fa-file-pdf"></i> Export PDF
+                                <button type="button" class="btn btn-success btn-block" onclick="exportExcel()">
+                                    <i class="fa fa-file-excel"></i> Export Excel
                                 </button>
                             </div>
                         </div>
@@ -129,11 +129,11 @@
         });
     }
 
-    function exportPdf() {
+    function exportExcel() {
         var bulan_tahun_id = $('#bulan_tahun_id').val();
         var skpd_id = $('#skpd_id').val();
         
-        var url = '/superadmin/pajakgabungan/export-pdf?bulan_tahun_id=' + (bulan_tahun_id || '') + '&skpd_id=' + (skpd_id || '');
+        var url = '/superadmin/pajakgabungan/export-excel?bulan_tahun_id=' + (bulan_tahun_id || '') + '&skpd_id=' + (skpd_id || '');
         window.open(url, '_blank');
     }
 </script>

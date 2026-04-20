@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PajakGabunganExport;
 use App\Imports\ThrImport;
 use App\Models\BulanTahun;
 use App\Models\Pajak;
@@ -116,5 +117,31 @@ class PajakGabunganController extends Controller
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream('laporan_pajak_gabungan.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $query = Pajak::query();
+
+        if ($request->bulan_tahun_id) {
+            $query->where('bulan_tahun_id', $request->bulan_tahun_id);
+        }
+
+        if ($request->skpd_id) {
+            $query->where('skpd_id', $request->skpd_id);
+        }
+
+        $data = $query->get()->map(function ($item) {
+            return [
+                'nip' => $item->nip,
+                'nama' => $item->nama,
+                'pph_terutang' => $item->pph_terutang,
+                'pph_thr' => $item->pph_thr
+            ];
+        })->sortByDesc(function ($item) {
+            return $item['pph_terutang'] ?? 0;
+        })->values();
+
+        return Excel::download(new PajakGabunganExport($data), 'laporan_pajak_gabungan.xlsx');
     }
 }

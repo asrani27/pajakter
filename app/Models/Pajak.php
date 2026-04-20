@@ -118,7 +118,7 @@ class Pajak extends Model
     }
     public function getPphThrAttribute()
     {
-        $penghasilan = $this->jumlah_thr;  // Ambil penghasilan dari field jumlah THR
+        $penghasilan = $this->jumlah_thr ?? 0;  // Ambil penghasilan dari field jumlah THR, default 0 jika NULL
         $kelompok = $this->kelompok;  // Ambil kelompok berdasarkan PTKP (TER A, TER B, TER C)
 
         // Menentukan tarif berdasarkan kelompok dan penghasilan
