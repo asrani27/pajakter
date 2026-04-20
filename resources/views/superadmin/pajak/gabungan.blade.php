@@ -30,9 +30,18 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>&nbsp;</label>
-                        <button type="button" class="btn btn-primary btn-block" onclick="filterData()">
-                            <i class="fa fa-filter"></i> Filter
-                        </button>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-primary btn-block" onclick="filterData()">
+                                    <i class="fa fa-filter"></i> Filter
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-danger btn-block" onclick="exportPdf()">
+                                    <i class="fa fa-file-pdf"></i> Export PDF
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -60,7 +69,7 @@
                     </tbody>
                     <tfoot style="background-color:#e9ecef;font-weight:bold;">
                         <tr>
-                            <td colspan="3" style="border: 1px solid rgb(19, 19, 19)">Total Pajak Terutang</td>
+                            <td colspan="3" style="border: 1px solid rgb(19, 19, 19)">Total Pajak</td>
                             <td style="border: 1px solid rgb(19, 19, 19)" class="text-right" id="total_pajak">0</td>
                             <td style="border: 1px solid rgb(19, 19, 19)" class="text-right" id="total_thr">0</td>
                         </tr>
@@ -103,8 +112,8 @@
                         html += '<td style="border: 1px solid rgb(19, 19, 19)">' + (index + 1) + '</td>';
                         html += '<td style="border: 1px solid rgb(19, 19, 19)">' + item.nip + '</td>';
                         html += '<td style="border: 1px solid rgb(19, 19, 19)">' + item.nama + '</td>';
-                        html += '<td style="border: 1px solid rgb(19, 19, 19)">' + pph.toLocaleString('id-ID') + '</td>';
-                        html += '<td style="border: 1px solid rgb(19, 19, 19)">' + pph_thr.toLocaleString('id-ID') + '</td>';
+                        html += '<td style="border: 1px solid rgb(19, 19, 19)" class="text-right">' + pph.toLocaleString('id-ID') + '</td>';
+                        html += '<td style="border: 1px solid rgb(19, 19, 19)" class="text-right">' + pph_thr.toLocaleString('id-ID') + '</td>';
                         html += '</tr>';
                     });
                 } else {
@@ -118,6 +127,14 @@
                 alert('Gagal mengambil data');
             }
         });
+    }
+
+    function exportPdf() {
+        var bulan_tahun_id = $('#bulan_tahun_id').val();
+        var skpd_id = $('#skpd_id').val();
+        
+        var url = '/superadmin/pajakgabungan/export-pdf?bulan_tahun_id=' + (bulan_tahun_id || '') + '&skpd_id=' + (skpd_id || '');
+        window.open(url, '_blank');
     }
 </script>
 @endpush

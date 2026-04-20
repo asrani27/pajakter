@@ -77,7 +77,9 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/skpd', [SkpdController::class, 'index']);
 
     Route::get('/superadmin/pajakgabungan', [PajakGabunganController::class, 'index']);
+    Route::post('/superadmin/pajakter/thr/{id}', [PajakGabunganController::class, 'uploadTHR']);
     Route::get('/superadmin/pajakgabungan/get-data', [PajakGabunganController::class, 'getData']);
+    Route::get('/superadmin/pajakgabungan/export-pdf', [PajakGabunganController::class, 'exportPdf']);
 
     Route::get('/superadmin/ptkp', [PtkpController::class, 'index']);
     Route::get('/superadmin/ptkp/search', [PtkpController::class, 'search']);

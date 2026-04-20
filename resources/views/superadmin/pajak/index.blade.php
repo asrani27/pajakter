@@ -24,6 +24,7 @@
                             <th style="border: 1px solid rgb(19, 19, 19)">Bulan - Tahun</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Gaji Utk TPP</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Gaji Utk BPJS</th>
+                            <th style="border: 1px solid rgb(19, 19, 19)">THR</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">PPPK</th>
                             <th style="border: 1px solid rgb(19, 19, 19)">Aksi</th>
                         </tr>
@@ -45,6 +46,15 @@
                             </td>
                             <td style="border: 1px solid rgb(19, 19, 19)">
                                 <form method="post" action="/superadmin/pajakter/gajibpjs/{{$item->id}}"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="file" class="form-control-sm" name="file" required>
+                                    <button type="submit" class="btn btn-xs btn-primary"><i class="fa fa-upload"></i>
+                                        Upload</button>
+                                </form>
+                            </td>
+                            <td style="border: 1px solid rgb(19, 19, 19)">
+                                <form method="post" action="/superadmin/pajakter/thr/{{$item->id}}"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <input type="file" class="form-control-sm" name="file" required>

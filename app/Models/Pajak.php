@@ -115,4 +115,31 @@ class Pajak extends Model
     {
         return round($this->pph_penghasilan - $this->pph_gaji);
     }
+    public function getPphThrAttribute()
+    {
+        $penghasilan = $this->jumlah_thr;  // Ambil penghasilan dari field jumlah THR
+        $kelompok = $this->kelompok;  // Ambil kelompok berdasarkan PTKP (TER A, TER B, TER C)
+
+        // Menentukan tarif berdasarkan kelompok dan penghasilan
+        $tarif = null;
+
+        // Cari tarif berdasarkan kelompok dan penghasilan
+        $tarifData = DB::table('tarif')
+            ->where('ter', $kelompok)  // Sesuaikan dengan kelompok
+            ->where('mulai', '<=', $penghasilan)  // Mulai tarif <= penghasilan
+            ->where(function ($query) use ($penghasilan) {
+                // Jika Sampai ada dan penghasilan <= Sampai, maka pilih tarif tersebut
+                $query->where('sampai', '>=', $penghasilan)
+                    ->orWhereNull('sampai');
+            })
+            ->orderBy('mulai', 'desc')  // Urutkan berdasarkan Mulai untuk memilih rentang yang tepat
+            ->first();
+
+        // Jika ada tarif yang ditemukan
+        if ($tarifData) {
+            $tarif = $tarifData->tarif;  // Ambil nilai tarif
+        }
+
+        return round($penghasilan * $tarif / 100);
+    }
 }
