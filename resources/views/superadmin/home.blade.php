@@ -25,6 +25,9 @@
                     <a href="/superadmin/pajakter" class="btn btn-app bg-info">
                         <i class="fas fa-money-bill"></i> <strong>PAJAK TER</strong>
                     </a>
+                    <a href="/superadmin/pajakgabungan" class="btn btn-app bg-info">
+                        <i class="fas fa-money-bill"></i> <strong>PAJAK GABUNGAN</strong>
+                    </a>
                     <a href="/superadmin/skpd" class="btn btn-app bg-info">
                         <i class="fas fa-university"></i> <strong>SKPD</strong>
                     </a>

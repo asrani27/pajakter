@@ -12,6 +12,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PajakController;
+use App\Http\Controllers\PajakGabunganController;
 use App\Http\Controllers\RFKController;
 use App\Http\Controllers\SkpdController;
 use App\Http\Controllers\PtkpController;
@@ -74,6 +75,9 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/user/delete/{id}', [UserController::class, 'delete']);
 
     Route::get('/superadmin/skpd', [SkpdController::class, 'index']);
+
+    Route::get('/superadmin/pajakgabungan', [PajakGabunganController::class, 'index']);
+    Route::get('/superadmin/pajakgabungan/get-data', [PajakGabunganController::class, 'getData']);
 
     Route::get('/superadmin/ptkp', [PtkpController::class, 'index']);
     Route::get('/superadmin/ptkp/search', [PtkpController::class, 'search']);
